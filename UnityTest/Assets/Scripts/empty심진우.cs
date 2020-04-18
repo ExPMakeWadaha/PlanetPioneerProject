@@ -13,6 +13,6 @@ public class empty심진우 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Debug.Log("doing well");
     }
 }
