@@ -26,6 +26,7 @@ public class Building           //빌딩 하나하나가 가지는 클래스.
         //물론 Vector3도 클래스이기 때문에 객체를 new로 할당해주어야 이용할 수 있따. 
         objectPara.transform.position = positionVector;
         //오브젝트의 위치를 object.trasnform.position = (Vector3객체 무언가); 의 형식으로 이동시킬 수 있다
+        Debug.Log("전나잘됨");
     }
 
     public int incomeCollect()
