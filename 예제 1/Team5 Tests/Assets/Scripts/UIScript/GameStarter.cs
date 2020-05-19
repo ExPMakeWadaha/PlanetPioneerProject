@@ -21,4 +21,9 @@ public class GameStarter : MonoBehaviour
     {
         SceneManager.LoadScene("GamePlayScene");
     }
+
+    public void StartGameScene()
+    {
+        SceneManager.LoadScene("StartScene");
+    }
 }
