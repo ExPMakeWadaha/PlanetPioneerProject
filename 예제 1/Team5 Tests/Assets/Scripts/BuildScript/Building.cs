@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building           //빌딩 하나하나가 가지는 클래스.
+public class Building        //빌딩 하나하나가 가지는 클래스.
 {
     public int type;            //건물의 종류. 지금은 의미없는 변수
     public int index;           //건물이 몇 번째로 생긴 건물인지
@@ -34,5 +34,7 @@ public class Building           //빌딩 하나하나가 가지는 클래스.
         return income;
         //update에서 income을 불러올 때 사용하는 함수.
     }
+    
+    
 
 }
