@@ -1,0 +1,81 @@
+{
+    "stageArray": [
+        {
+            "stageIndex": 0,
+            "buildingList": [
+                {
+                    "type": 1,
+                    "index": 0,
+                    "income": 1,
+                    "buildingObject": {
+                        "instanceID": -10850
+                    },
+                    "positionVector": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "isCcompleted": false,
+                    "buildEndTime": "",
+                    "wholeBuildTIme": "",
+                    "buildingName": ""
+                }
+            ],
+            "coin": 2000,
+            "reputation": 1000,
+            "progressRate": 90.0999984741211,
+            "achievementArray": [
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false
+            ]
+        },
+        {
+            "stageIndex": 0,
+            "buildingList": [],
+            "coin": 2000,
+            "reputation": 1000,
+            "progressRate": 90.0999984741211,
+            "achievementArray": [
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false
+            ]
+        },
+        {
+            "stageIndex": 0,
+            "buildingList": [],
+            "coin": 4000,
+            "reputation": 2000,
+            "progressRate": 180.1999969482422,
+            "achievementArray": [
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false,
+                true,
+                false
+            ]
+        }
+    ],
+    "lastPlayTime": "2020-05-26 PM 7:02:53",
+    "id": "sanghun"
+}

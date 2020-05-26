@@ -21,9 +21,16 @@ public GameObject cube;     //큐브,Prefab폴더에 있는 Cube를 스크립트
                                     //C#에서의 동적배열은 Array가 아닌 List로 한다.
                                     //포인터 개념을 사용하지 않기 때문에 C++에서의 동적배열 방법은 사용하지 않는다.
                                     //대신 이미 있는 라이브러리인 List를 써준다.List가 궁금하면 API를 찾아보길 바란다.
-    
     bool isOptioning;   //환경설정창이 켜져있는지 판정하는 bool값
     //켜져있으면 true, 꺼지면 false
+
+    //200528 19:37이 아래부터 상훈이가 적은겁니다 for data saving TEST
+    WholeGameData dumyGameData; 
+    StageData stageData;
+    JsonManager jsonManager;
+    public bool saveInTrue;
+    public List<BuildingData> jsonBuildingList;
+
 
     //OptionManager에서 부르는 함수이다.
     public void Optioning()
@@ -45,6 +52,11 @@ public GameObject cube;     //큐브,Prefab폴더에 있는 Cube를 스크립트
         //nowBuildingIndex를 더해주어서 빌딩에 인덱스표기까지 해준다
         buildingList.Add(b1);                   //b1을 Add해준당
         // 생성자가 생각이안나서 썼따 (int typePara, int indexPara, int incomePara, GameObject objectPara)
+
+        //200528 19:37이 아래부터 상훈이가 적은겁니다. for data saving
+        jsonManager = new JsonManager();
+        dumyGameData = new WholeGameData();
+        stageData = new StageData();
     }
 
     void Update()   //60Hz모니터를 사용중이라면 1초에 60번 실행되는 함수다. 144Hz모니터라면 144번 실행된다
@@ -87,10 +99,42 @@ public GameObject cube;     //큐브,Prefab폴더에 있는 Cube를 스크립트
                 //이를 통해 for구문을 몇번 반복할지 알 수 있다. 그래서 아래대로 작성하면
                 for (int i = 0; i < buildingList.Count; i++)
                 {
-                    nowMoney += buildingList[i].incomeCollect();
+                    nowMoney += buildingList[i].IncomeCollect();
                 }
                 Debug.Log("Now Money is " + nowMoney);
                 //Debug.Log는 cout이나 printf정도로 생각하면 된다
+            }
+
+
+            //200528 19:37이 아래부터 상훈이가 적은겁니다 for data saving
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                stageData.buildingList = buildingList;      //this is justa test. never do like this
+                dumyGameData.ChangeStageData(stageData, 0);
+                jsonManager.Save(dumyGameData);
+            }
+
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                dumyGameData = jsonManager.Load();
+                foreach (Building building in buildingList)
+                {
+                    Destroy(building.buildingObject);
+                }
+                buildingList = dumyGameData.stageArray[0].buildingList;
+                foreach (Building building in buildingList)
+                {
+                    Instantiate(cube);
+                    cube.transform.position = building.positionVector;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                jsonBuildingList = jsonManager.LoadBuildingData();
+                foreach(BuildingData a in jsonBuildingList)
+                {
+                    Debug.Log(a.buildingName);
+                }
             }
         }
        
