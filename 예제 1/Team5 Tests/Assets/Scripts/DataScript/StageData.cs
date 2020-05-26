@@ -9,7 +9,6 @@ public class StageData
 {
     public int stageIndex;                     //몇번쨰 구역인지(0,1,2)
     public List<Building> buildingList;        //현재 빌딩의 개수
-    public int coin;                           //현재 돈
     public int reputation;                     //명성치
     public float progressRate;                 //진척도
     public bool[] achievementArray;            //업적 달성한게 뭔지
@@ -21,7 +20,7 @@ public class StageData
         //nothing yet
         stageIndex = 0;
         buildingList = new List<Building>();
-        coin = 2000;
+        
         reputation = 1000;
         progressRate = 90.1f;
         achievementArray = new bool[10];
@@ -44,7 +43,7 @@ public class StageData
         //nothing yet
         stageIndex = 0;
         buildingList = new List<Building>();
-        coin = 2000*index;
+        
         reputation = 1000*index;
         progressRate = 90.1f*index;
         achievementArray = new bool[10];
