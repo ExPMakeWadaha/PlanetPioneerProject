@@ -95,7 +95,51 @@ public class JsonManager
         //래퍼 객체로 변환해주고, 래퍼 안의 array만 쏘옥 빼온다
         arr = wrapper.buildingArr;
         data = arr.ToList();
+        string path = "modeling/";
+        StringBuilder stringBuilder = new StringBuilder(path);
+        
+
+        //리스트 내의 각 데이터에 Resources.Load로 GameObject할당하는 작업
+        foreach (BuildingData building in data)
+        {
+            string appender = building.buildingName;
+            stringBuilder.Append(appender);
+            GameObject obj = Resources.Load<GameObject>(stringBuilder.ToString());
+            if(obj == null)
+            {
+                obj = Resources.Load<GameObject>("modeling/Cube");
+                building.prefab = obj;
+            }
+            else
+            {
+                building.prefab = obj;
+
+            }
+            
+            stringBuilder.Remove(path.Length, appender.Length); //스트링빌더에서 더했던걸 다시 빼준당
+
+        }
         //그 어레이를 리스트로 바꿔주고 리턴하면 끗
         return data;
     }
+
+    /* // 어플을 나갈때 함수
+void OnApplicationQuit()
+{
+     PlayerPrefs.SetString("a"a.ToString());
+     PlayerPrefs.SetFloat("b", (float)b);
+}
+ 
+ 
+// 어플이 뭠췄을때를 확인하는 함수(앱을 강제종료시 데이터 저장)
+ void OnApplicationPause(bool pauseStatus)
+ {
+ 
+     if (pauseStatus)
+     {
+         PlayerPrefs.SetString("a"a.ToString());
+         PlayerPrefs.SetFloat("b", (float)b);
+     }
+  
+ }*/
 }

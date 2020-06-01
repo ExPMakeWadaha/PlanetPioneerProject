@@ -32,6 +32,7 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
     4. 건물이 완료되면 오브젝트 변경하기
     */
 
+
     //this one is test
     public Building(int typePara, int indexPara, int incomePara, GameObject objectPara)
     {
@@ -60,8 +61,6 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
         positionVector = positionPara;
         buildEndTime = endTime;
         wholeBuildTIme = wholeTime;
-
-
 
         //빌딩 오브젝트가 어디 위치할지 positionVector로 정해준다
         //물론 Vector3도 클래스이기 때문에 객체를 new로 할당해주어야 이용할 수 있따. 

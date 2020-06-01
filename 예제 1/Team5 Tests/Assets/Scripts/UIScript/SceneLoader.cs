@@ -24,6 +24,8 @@ public class SceneLoader : MonoBehaviour
     public string gameStartTime;
     //게임시작시간을 알기위해 넣는다. 전나중요함
     public int gameTimer;       //초단위
+
+    public GameObject dumyLoadingBar; // 로딩바로 쓸 큐브
     //증말 제일중요한거. 게임 시작을 하게되면 wholeGameData에서 lastPlayTime을 받아온다
     //이전에 접속한 시간을 얻어내면 그때부터 지금까지 시간을 알 수 있다
     //그런데 시간초를 게임매니저에서 세어주게 되면은 메뉴에서 서성이는 시간은 시간초로 안세어진느 것이다
@@ -57,10 +59,10 @@ public class SceneLoader : MonoBehaviour
             //만약 싱글톤에 다른 값이 있다면, 이미 객체가 있다는 뜻이니까 이 스크립트가 달린 오브젝트를 삭제한다.
             //gameObject는 이 스크립트가 달려있는 게임오브젝트값이다.
         }
-        StartCoroutine(SceneLoadCoroutine());
         jsonManager = new JsonManager();
         gameStartTime = System.DateTime.Now.ToString();
-        
+        StartCoroutine(SceneLoadCoroutine());
+        WholeGameDataLoad();
     }
 
     //메뉴신을 불러오는 코루틴. 여기서 앵간한 로딩은 다 해줘야한다.
@@ -70,9 +72,13 @@ public class SceneLoader : MonoBehaviour
         yield return null;
         //씬로딩은 그다음에 실행한다
         AsyncOperation operation = SceneManager.LoadSceneAsync("MenuScene");
-        operation.allowSceneActivation = false;
+        operation.allowSceneActivation = true;
+        Vector3 vector = new Vector3(0, (operation.progress - 0.5f) * 5, 0);
         while (!operation.isDone)
         {
+            vector.y = (operation.progress - 0.5f) * 10;
+            dumyLoadingBar.transform.position = vector;
+           
             yield return null;
             if(operation.progress > 0.9f)
             {
@@ -83,5 +89,43 @@ public class SceneLoader : MonoBehaviour
 
     IEnumerator JsonLoadCoroutine(){
         yield return null;
+        
     }
+
+    void WholeGameDataLoad()
+    {
+        wholeGameData = jsonManager.Load();
+        buildingDataList = jsonManager.LoadBuildingData();
+    }
+
+    private void OnApplicationQuit()
+    {
+        jsonManager.Save(wholeGameData);
+        //일반종료시 끔
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        //jsonManager.Save(wholeGameData);
+        //강제종료시 끔
+    }
+    /* // 어플을 나갈때 함수
+void OnApplicationQuit()
+{
+ PlayerPrefs.SetString("a"a.ToString());
+ PlayerPrefs.SetFloat("b", (float)b);
+}
+
+
+// 어플이 뭠췄을때를 확인하는 함수(앱을 강제종료시 데이터 저장)
+void OnApplicationPause(bool pauseStatus)
+{
+
+ if (pauseStatus)
+ {
+     PlayerPrefs.SetString("a"a.ToString());
+     PlayerPrefs.SetFloat("b", (float)b);
+ }
+
+}*/
 }

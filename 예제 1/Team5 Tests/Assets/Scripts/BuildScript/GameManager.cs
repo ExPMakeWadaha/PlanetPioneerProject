@@ -25,11 +25,11 @@ public GameObject cube;     //큐브,Prefab폴더에 있는 Cube를 스크립트
     //켜져있으면 true, 꺼지면 false
 
     //200528 19:37이 아래부터 상훈이가 적은겁니다 for data saving TEST
+    /*
     WholeGameData dumyGameData; 
     StageData stageData;
     JsonManager jsonManager;
-    public bool saveInTrue;
-    public List<BuildingData> jsonBuildingList;
+    public List<BuildingData> jsonBuildingList;*/
 
 
     //OptionManager에서 부르는 함수이다.
@@ -41,6 +41,7 @@ public GameObject cube;     //큐브,Prefab폴더에 있는 Cube를 스크립트
 
     void Start()
     {
+        /*
         //  ...............여기다가 작성하세용...........
         isOptioning = false;
         nowMoney = 0;
@@ -54,17 +55,20 @@ public GameObject cube;     //큐브,Prefab폴더에 있는 Cube를 스크립트
         // 생성자가 생각이안나서 썼따 (int typePara, int indexPara, int incomePara, GameObject objectPara)
 
         //200528 19:37이 아래부터 상훈이가 적은겁니다. for data saving
-        jsonManager = new JsonManager();
+        /*jsonManager = new JsonManager();
         dumyGameData = new WholeGameData();
-        stageData = new StageData();
+        stageData = new StageData();*/
     }
 
     void Update()   //60Hz모니터를 사용중이라면 1초에 60번 실행되는 함수다. 144Hz모니터라면 144번 실행된다
     {
         //예제2번에서 환경설정이 켜질 때 timer는 정지하여야 한다ㅣ.
 
+
+        /*
         if (isOptioning==false)
         {
+            
             timer += Time.deltaTime;    //timer는 시계다. 1초가 올라갈 때마다 1씩 올라가야 하는데, 이걸 재어주는 변수가 Time.deltaTime이다
                                         //1프레임이 지나가는 떄에 걸리는 실제 시간이 deltaTime이다.
                                         //모니터가 60Hz라고 가정하면, Time.deltaTime은 60분의 1초가 된다
@@ -106,6 +110,7 @@ public GameObject cube;     //큐브,Prefab폴더에 있는 Cube를 스크립트
             }
 
 
+            /*
             //200528 19:37이 아래부터 상훈이가 적은겁니다 for data saving
             if (Input.GetKeyDown(KeyCode.F1))
             {
@@ -137,12 +142,11 @@ public GameObject cube;     //큐브,Prefab폴더에 있는 Cube를 스크립트
                 }
             }
         }
-       
-        
+       */
+    }
 
     //...............여기다가 작성하세용...........
 
 }
 
 
-}

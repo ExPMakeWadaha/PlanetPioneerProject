@@ -16,5 +16,6 @@ public class BuildingData
     public int cost;                //드는 비용
     public int width;               //garo             
     public int height;              //sero
-
+    public int mileage;         //mileage
+    public GameObject prefab;       //prefab object
 }
