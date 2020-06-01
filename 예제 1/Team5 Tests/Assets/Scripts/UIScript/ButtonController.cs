@@ -31,7 +31,7 @@ public class ButtonController : MonoBehaviour
 
     public void PlaySceneLoad()
     {
-        sceneLoader.LoadScene("GamePlayScene");
+        //sceneLoader.LoadScene("GamePlayScene");
     }
 
     // Update is called once per frame

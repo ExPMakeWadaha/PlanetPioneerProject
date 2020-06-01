@@ -10,6 +10,9 @@
                     "buildingObject": {
                         "instanceID": -10850
                     },
+                    "incompletedObject": {
+                        "instanceID": 0
+                    },
                     "positionVector": {
                         "x": 0.0,
                         "y": 0.0,
@@ -21,7 +24,7 @@
                     "buildingName": ""
                 }
             ],
-            "reputation": 1000,
+            "mileage": 0,
             "progressRate": 90.0999984741211,
             "achievementArray": [
                 true,
@@ -39,7 +42,7 @@
         {
             "stageIndex": 0,
             "buildingList": [],
-            "reputation": 1000,
+            "mileage": 1000,
             "progressRate": 90.0999984741211,
             "achievementArray": [
                 true,
@@ -57,7 +60,7 @@
         {
             "stageIndex": 0,
             "buildingList": [],
-            "reputation": 2000,
+            "mileage": 2000,
             "progressRate": 180.1999969482422,
             "achievementArray": [
                 true,
@@ -73,7 +76,7 @@
             ]
         }
     ],
-    "lastPlayTime": "2020-05-26 PM 7:02:53",
+    "lastPlayTime": "2020-06-01 PM 12:32:34",
     "id": "sanghun",
     "coin": 1000
 }

@@ -41,23 +41,7 @@ public GameObject cube;     //큐브,Prefab폴더에 있는 Cube를 스크립트
 
     void Start()
     {
-        /*
-        //  ...............여기다가 작성하세용...........
-        isOptioning = false;
-        nowMoney = 0;
-        timer = 0;
-        nowBuildingIndex = 0;
-        newCube = Instantiate(cube);    //큐브 객체를 World에 생성하고, 그 객체를 newCube로 지정하겠다는 것이다
-        buildingList = new List<Building>();    //List또한 객체이기 때문에 빈 List객체를 new로 할당하여야 한다
-        Building b1 = new Building(1, nowBuildingIndex++, 1, newCube);   //지역변수 b1을 통해 새 객체를 만들어주고, 이 객체를 List에 Add하여야 한다.
-        //nowBuildingIndex를 더해주어서 빌딩에 인덱스표기까지 해준다
-        buildingList.Add(b1);                   //b1을 Add해준당
-        // 생성자가 생각이안나서 썼따 (int typePara, int indexPara, int incomePara, GameObject objectPara)
 
-        //200528 19:37이 아래부터 상훈이가 적은겁니다. for data saving
-        /*jsonManager = new JsonManager();
-        dumyGameData = new WholeGameData();
-        stageData = new StageData();*/
     }
 
     void Update()   //60Hz모니터를 사용중이라면 1초에 60번 실행되는 함수다. 144Hz모니터라면 144번 실행된다

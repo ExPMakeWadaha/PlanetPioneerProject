@@ -67,7 +67,7 @@ public class OptionManager : MonoBehaviour
     //static한 객체는 public으로 선언해서 값을 안넣어줘도 그냥 가져올 수 있다. 그렇게 하자.
     public void BackToStartscene()
     {
-        SceneLoader.singleTone.LoadScene("StartScene");
+        SceneLoader.singleTone.LoadScene("StartScene", 0);
         //싱글톤이 있으면 절라 간단하다. 만약 싱글톤이 없었으면 이렇게 하면 된다.
         /*
         SceneLoader sceneLoader = GameObject.Find("SceneLoader").GetComponent<SceneLoader>();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Transactions;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
@@ -32,11 +33,17 @@ public class SceneLoader : MonoBehaviour
     //게임을 꺼도 세어져야하는게 시간이다. 그렇기 때문에 게임을 켜자마자 시간을 재줘야한다
     //이거는 Time.realtimeSinceStartup이라는 읽기전용 변수가 있으니 일단은 고민해본다.
 
+    public int pastSeconds;
+    //지난게임으로부터 지금까지 지난 시간을 초로 나타냄
+
+    int nowStage;
+
 
     //버튼이 클릭될 때 실행될 메서드 만들기
-    public void LoadScene(string sceneName)
+    public void LoadScene(string sceneName, int stageIndex)
     {
         SceneManager.LoadScene(sceneName);
+        nowStage = stageIndex;
         //scene로드는 scene의 이름을 string으로 호출하여 로드한다.
         //scene로드를 하려면 Editor에서 File/BuildSettings/ScenesInBuild에 로드하려는 Scene이 들어가있어야한다.
         //BuildSettings에 Scene이 들어가있지 않으면, 그 Scene을 사용하지 않겠다는 걸로 간주해서 로드를 할 수가 없다.
@@ -61,29 +68,33 @@ public class SceneLoader : MonoBehaviour
         }
         jsonManager = new JsonManager();
         gameStartTime = System.DateTime.Now.ToString();
-        StartCoroutine(SceneLoadCoroutine());
         WholeGameDataLoad();
+        StartCoroutine(FirstSceneLoadCoroutine());
+        nowStage = 0;
+        pastSeconds = TimeSubtractionToSeconds(wholeGameData.lastPlayTime, gameStartTime);
+        
+
+        
     }
 
     //메뉴신을 불러오는 코루틴. 여기서 앵간한 로딩은 다 해줘야한다.
-    IEnumerator SceneLoadCoroutine()
+    IEnumerator FirstSceneLoadCoroutine()
     {
         //먼저 다른함수들이 돌 수 있게 리턴을 찍어준다
         yield return null;
         //씬로딩은 그다음에 실행한다
         AsyncOperation operation = SceneManager.LoadSceneAsync("MenuScene");
+        //비동기로 씬 로딩하는거. 일케 안하면 게임이 멈춰버린다
         operation.allowSceneActivation = true;
+        
         Vector3 vector = new Vector3(0, (operation.progress - 0.5f) * 5, 0);
         while (!operation.isDone)
         {
             vector.y = (operation.progress - 0.5f) * 10;
             dumyLoadingBar.transform.position = vector;
-           
+            //로딩바 채워지는걸 여기서 넣는다
             yield return null;
-            if(operation.progress > 0.9f)
-            {
-                operation.allowSceneActivation = true;
-            }
+            
         }
     }
 
@@ -100,6 +111,7 @@ public class SceneLoader : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        wholeGameData.lastPlayTime = System.DateTime.Now.ToString();
         jsonManager.Save(wholeGameData);
         //일반종료시 끔
     }
@@ -109,23 +121,24 @@ public class SceneLoader : MonoBehaviour
         //jsonManager.Save(wholeGameData);
         //강제종료시 끔
     }
-    /* // 어플을 나갈때 함수
-void OnApplicationQuit()
-{
- PlayerPrefs.SetString("a"a.ToString());
- PlayerPrefs.SetFloat("b", (float)b);
-}
 
+    //time - time 기능 구현
+    public int TimeSubtractionToSeconds(string pastTime, string latestTime)
+    {
+        DateTime past = DateTime.Parse(pastTime);
+        DateTime latest = DateTime.Parse(latestTime);
+        //string to datetime
+        if(past ==null || latest == null)
+        {
+            Debug.Log("time is null");
+            Application.Quit();
+            return 0;
+        }
 
-// 어플이 뭠췄을때를 확인하는 함수(앱을 강제종료시 데이터 저장)
-void OnApplicationPause(bool pauseStatus)
-{
+        TimeSpan span = latest - past;
+        int seconds = (int)span.TotalSeconds;
+        Debug.Log("subtraction is " + seconds);
 
- if (pauseStatus)
- {
-     PlayerPrefs.SetString("a"a.ToString());
-     PlayerPrefs.SetFloat("b", (float)b);
- }
-
-}*/
+        return seconds;
+    }
 }

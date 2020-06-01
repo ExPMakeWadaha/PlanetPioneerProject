@@ -27,7 +27,9 @@ public class WholeGameData
             incompletedBuildingList[i] = new List<Building>();
             stageArray[i] = new StageData(i);
         }
+        
         lastPlayTime = System.DateTime.Now.ToString();
+
         id = "sanghun";
     }
 
