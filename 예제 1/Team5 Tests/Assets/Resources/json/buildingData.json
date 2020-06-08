@@ -16,11 +16,11 @@
 {"buildingName":"processingFacility","type":1,"incomeCoin":330,"buildTime":43200,"cost":3300,"sellCost":1600,"width":10,"height":5,"mileage":1000},
 {"buildingName":"factory","type":1,"incomeCoin":350,"buildTime":43200,"cost":4000,"sellCost":2000,"width":10,"height":5,"mileage":1000},
 {"buildingName":"tower","type":1,"incomeCoin":350,"buildTime":43200,"cost":4000,"sellCost":2000,"width":8,"height":8,"mileage":1500},
-{"buildingName":"artificialSatelite1","type":1,"incomeCoin":400,"buildTime":57600,"cost":5000,"sellCost":2500,"width":8,"height":8,"mileage":1500},
-{"buildingName":"artificialSatelite2","type":1,"incomeCoin":400,"buildTime":57600,"cost":5000,"sellCost":2500,"width":8,"height":8,"mileage":2000},
+{"buildingName":"satelite1","type":1,"incomeCoin":400,"buildTime":57600,"cost":5000,"sellCost":2500,"width":8,"height":8,"mileage":1500},
+{"buildingName":"satelite2","type":1,"incomeCoin":400,"buildTime":57600,"cost":5000,"sellCost":2500,"width":8,"height":8,"mileage":2000},
 {"buildingName":"park","type":1,"incomeCoin":500,"buildTime":108000,"cost":6000,"sellCost":3000,"width":10,"height":10,"mileage":2000},
 {"buildingName":"powerPlant","type":1,"incomeCoin":500,"buildTime":108000,"cost":7000,"sellCost":3500,"width":10,"height":10,"mileage":2000},
-{"buildingName":"green_house","type":1,"incomeCoin":600,"buildTime":108000,"cost":8000,"sellCost":4000,"width":10,"height":10,"mileage":2000},
+{"buildingName":"greenhouse","type":1,"incomeCoin":600,"buildTime":108000,"cost":8000,"sellCost":4000,"width":10,"height":10,"mileage":2000},
 {"buildingName":"farm","type":1,"incomeCoin":600,"buildTime":108000,"cost":8000,"sellCost":4000,"width":10,"height":10,"mileage":2000},
 {"buildingName":"port","type":1,"incomeCoin":700,"buildTime":129600,"cost":9000,"sellCost":4500,"width":10,"height":10,"mileage":3000},
 {"buildingName":"stadium","type":1,"incomeCoin":700,"buildTime":129600,"cost":9000,"sellCost":4500,"width":10,"height":10,"mileage":3000},
@@ -28,7 +28,7 @@
 {"buildingName":"zone1Landmark","type":0,"incomeCoin":5,"buildTime":0,"cost":0,"sellCost":-1,"width":10,"height":10,"mileage":10000},
 {"buildingName":"zone2Landmark","type":0,"incomeCoin":50,"buildTime":90000,"cost":100000,"sellCost":-1,"width":10,"height":10,"mileage":20000},
 {"buildingName":"zone3Landmark","type":0,"incomeCoin":100,"buildTime":90000,"cost":1000000,"sellCost":-1,"width":10,"height":5,"mileage":30000},
-{"buildingName":"satelite1","type":0,"incomeCoin":100,"buildTime":18000,"cost":1300,"sellCost":-1,"width":5,"height":5,"mileage":5000},
-{"buildingName":"satelite2","type":0,"incomeCoin":100,"buildTime":18000,"cost":1000,"sellCost":-1,"width":5,"height":5,"mileage":8000},
-{"buildingName":"satelite3","type":0,"incomeCoin":100,"buildTime":18000,"cost":1000,"sellCost":-1,"width":5,"height":5,"mileage":10000}]
+{"buildingName":"planet1","type":0,"incomeCoin":100,"buildTime":18000,"cost":1300,"sellCost":-1,"width":5,"height":5,"mileage":5000},
+{"buildingName":"planet2","type":0,"incomeCoin":100,"buildTime":18000,"cost":1000,"sellCost":-1,"width":5,"height":5,"mileage":8000},
+{"buildingName":"planet3","type":0,"incomeCoin":100,"buildTime":18000,"cost":1000,"sellCost":-1,"width":5,"height":5,"mileage":10000}]
 }
