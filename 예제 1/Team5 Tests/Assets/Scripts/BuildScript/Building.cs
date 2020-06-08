@@ -7,24 +7,20 @@ using System.Runtime;
 [System.Serializable]
 public class Building        //빌딩 하나하나가 가지는 클래스.
 {
-    public int type;            //건물의 종류. 200530 빌딩풀에서 가져오는 인덱스가 될 수 있다.
-                                //그렇지만 이름으로 검색하지않고 인덱스로 가져오면 오류가 생길 수 있음. 아직은 보류
-                                //landmark =0;, normal = 1
-    public int index;           //건물이 몇 번째로 생긴 건물인지
-    public int income;          //건물에서 나오는 돈은 얼마인지
-    public GameObject buildingObject;   //Building이 현재 가지고 있는 GameObject는 무엇인지
-                                        //object를 만드는 이유는 이 클래스의 함수에서
-                                        //오브젝트의 애니메이션이나 소멸을 관리해주어야 하기 때문
-    public GameObject incompletedObject;
-
+    public string buildingName;     //건물이름에 맞게 오브젝트를 가져와야한다
+    BuildingData buildingData;      //그냥 빌딩 자체가 데이터를 가져버리면 되잖아.
+                                    //stagedata에서도 이대로 저장되면 json이 너무 길어지니 안된다.
+                                    //private으로 해놓으면 제이슨에서 저장을 안한다. 그래서 json파일이 짧아져서 좋다.
+    public int index;               //건물이 그 스테이지에서 몇 번째로 생긴 건물인지
     public Vector3 positionVector;             //기하와 벡터에서의 그 벡터 맞다. 공간좌표 맞다.     
                                                //오브젝트의 위치(x,y,z)를 Vector3 클래스를 사용하여 나타낸다.
     //200530 started sanghun
 
-    public bool isCcompleted;              //완성되었는지, 완성되면 true
-    public string buildEndTime;   //건설이 끝나는 시간이다 string으로 저장
-    public string wholeBuildTIme;   //건설에 걸리는 전체시간
-    public string buildingName;     //건물이름에 맞게 오브젝트를 가져와야한다
+    public bool isCompleted;              //완성되었는지, 완성되면 true
+    public string buildStartTime;
+
+    public GameObject buildingObject;
+
 
 
     /*
@@ -36,48 +32,16 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
     */
 
 
-    //this one is test
-    public Building(int typePara, int indexPara, int incomePara, GameObject objectPara)
+    //빌딩이 처음에 만들어질 때 어떻게 될 것인가.
+    public Building(BuildingData data, int indexParameter)
     {
-        //생성자에서 받은 변수를 객체에다가 넣어줍니다.
-        type = typePara;
-        index = indexPara;
-        income = incomePara;
-        buildingObject = objectPara;
-        positionVector = new Vector3((indexPara / 5) * 2, 0, (indexPara % 5) * 2);
-        //빌딩 오브젝트가 어디 위치할지 positionVector로 정해준다
-        //물론 Vector3도 클래스이기 때문에 객체를 new로 할당해주어야 이용할 수 있따. 
-        objectPara.transform.position = positionVector;
-        //오브젝트의 위치를 object.trasnform.position = (Vector3객체 무언가); 의 형식으로 이동시킬 수 있다
-        Debug.Log("전나잘됨");
-    }
-
-
-    //this one is for real
-    public Building(string name, int indexPara, int incomePara, Vector3 positionPara,string endTime, string wholeTime,bool completed)
-    {
-        //생성자에서 받은 변수를 객체에다가 넣어줍니다.
-        buildingName = name;
-        index = indexPara;
-        income = incomePara;
-
-        positionVector = positionPara;
-        buildEndTime = endTime;
-        wholeBuildTIme = wholeTime;
-
-        //빌딩 오브젝트가 어디 위치할지 positionVector로 정해준다
-        //물론 Vector3도 클래스이기 때문에 객체를 new로 할당해주어야 이용할 수 있따. 
-        
-        //오브젝트의 위치를 object.trasnform.position = (Vector3객체 무언가); 의 형식으로 이동시킬 수 있다
-        Debug.Log("전나잘됨");
-    }
-
-
-
-    public int IncomeCollect()
-    {
-        return income;
-        //update에서 income을 불러올 때 사용하는 함수.
+        buildingData = data;
+        index = indexParameter;
+        buildStartTime = System.DateTime.Now.ToString();
+        buildingName = data.buildingName;
+        isCompleted = false;
+        //그냥 생성자다. 찬찬히 읽어보세요
+        //데이터를 집어넣어준다는것만 중요합니다.
     }
 
     public bool IsBuildingNow()
@@ -85,11 +49,19 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
         return true;
     }
 
-    public void buildComplete()
+    public GameObject LoadedObject()
     {
-
+        return null;
     }
-    
-    
+
+    public BuildingData GetData()
+    {
+        return buildingData;
+    }
+
+    public void SetData(BuildingData data)
+    {
+        buildingData = data;
+    }
 
 }

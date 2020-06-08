@@ -244,26 +244,30 @@ MonoBehaviour:
     stageArray:
     - stageIndex: 0
       buildingList: []
-      reputation: 0
+      mileage: 0
       progressRate: 0
       achievementArray: 01000100010001000100
+      incompletedIndex: 
     - stageIndex: 0
       buildingList: []
-      reputation: 1000
+      mileage: 0
       progressRate: 90.1
       achievementArray: 01000100010001000100
+      incompletedIndex: 
     - stageIndex: 0
       buildingList: []
-      reputation: 2000
+      mileage: 0
       progressRate: 180.2
       achievementArray: 01000100010001000100
+      incompletedIndex: 
     lastPlayTime: 2020-06-01 PM 12:39:41
     id: sanghun
     coin: 1000
-  buildingDataList: []
   gameStartTime: 
   gameTimer: 0
   dumyLoadingBar: {fileID: 1066538996}
+  pastSeconds: 0
+  nowStage: 0
 --- !u!4 &64981637
 Transform:
   m_ObjectHideFlags: 0

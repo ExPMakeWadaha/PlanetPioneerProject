@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
@@ -18,8 +19,11 @@ public class SceneLoader : MonoBehaviour
     
     public WholeGameData wholeGameData;
     //첫 게임 로딩에서 전체 게임 데이터를 가지고 게임매니저까지 보내줘야한다. jsonLoader에서 값을 받아올것이여
-    public List<BuildingData> buildingDataList;
+    
+    
+    public List<BuildingData>[] buildingDataListArray;
     //로딩을 첫로딩창에서 하기 위해 있다. jsonLoader에서 값을 받아올것이여
+    //리스트의 어레이다. 1스테이지의 빌딩데이터, 2스테이지의 빌딩데이터 등등이다..
     public JsonManager jsonManager;     //로딩해준다
     
     public string gameStartTime;
@@ -36,14 +40,21 @@ public class SceneLoader : MonoBehaviour
     public int pastSeconds;
     //지난게임으로부터 지금까지 지난 시간을 초로 나타냄
 
-    int nowStage;
+    public int nowStage;
+    //현재 어느 스테이지에 있는지, 메뉴와 로딩씬은 -1, 1 2 3구역은 0 1 2 이다.
 
+    bool isPaused;
+    //현재 paused인지 = 홈버튼눌러서 나갔는지 등등
 
-    //버튼이 클릭될 때 실행될 메서드 만들기
+    GameManager nowGameManager;
+    //현재 게임매니저에서 stageData를 받아와야한다.
+
+    //버튼이 클릭될 때 실행될 메서드 만들기. menuManager에서 부른다.
     public void LoadScene(string sceneName, int stageIndex)
     {
-        SceneManager.LoadScene(sceneName);
         nowStage = stageIndex;
+        SceneManager.LoadScene(sceneName);
+        
         //scene로드는 scene의 이름을 string으로 호출하여 로드한다.
         //scene로드를 하려면 Editor에서 File/BuildSettings/ScenesInBuild에 로드하려는 Scene이 들어가있어야한다.
         //BuildSettings에 Scene이 들어가있지 않으면, 그 Scene을 사용하지 않겠다는 걸로 간주해서 로드를 할 수가 없다.
@@ -66,12 +77,22 @@ public class SceneLoader : MonoBehaviour
             //만약 싱글톤에 다른 값이 있다면, 이미 객체가 있다는 뜻이니까 이 스크립트가 달린 오브젝트를 삭제한다.
             //gameObject는 이 스크립트가 달려있는 게임오브젝트값이다.
         }
+        isPaused = false;
         jsonManager = new JsonManager();
+        //제이슨 매니저 만들어준다
+
         gameStartTime = System.DateTime.Now.ToString();
-        WholeGameDataLoad();
+        //게임 시작시간 기록
+
+        StartCoroutine(TimerCoroutine());
+        //게임 타이머 돌리는 코루틴. 1초마다 올라간다.
+
         StartCoroutine(FirstSceneLoadCoroutine());
-        nowStage = 0;
-        pastSeconds = TimeSubtractionToSeconds(wholeGameData.lastPlayTime, gameStartTime);
+        //메뉴씬을 로딩하는 코루틴, 이거 해야 로딩바를 만들 수 있다. 아니면은 로딩시간동안 모든게 멈춰버린다
+
+        nowStage = -1;
+        //스테이지가 몇스테이지인지 나타내주는건데, 0,1,2는 1 2 3 구역이고, -1은 그 외이다. 플레이안할때인겨.
+        
         
 
         
@@ -87,6 +108,12 @@ public class SceneLoader : MonoBehaviour
         //비동기로 씬 로딩하는거. 일케 안하면 게임이 멈춰버린다
         operation.allowSceneActivation = true;
         
+        WholeGameDataLoad();
+
+        //게임데이터 로드, 이 클래스 안의 함수다
+        //여기다가 넣는 이유는, 로딩바가 중간에 멈추더라도 사람들은 로딩중이라고
+        //생각하고 게임이 멈췄다고 생각은 안한다
+
         Vector3 vector = new Vector3(0, (operation.progress - 0.5f) * 5, 0);
         while (!operation.isDone)
         {
@@ -98,27 +125,81 @@ public class SceneLoader : MonoBehaviour
         }
     }
 
-    IEnumerator JsonLoadCoroutine(){
-        yield return null;
+    IEnumerator TimerCoroutine()
+    {
+        //게임 끝날떄까지 돌리는 타이머다
+        gameTimer = 0;
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            if (!isPaused)
+            {
+                gameTimer++;
+                //pause되었을 떄 코루틴이 돌지 안돌지 모른다. 그래서 예비대책으로 넣어두었다.
+            }
+            
+        }
         
     }
 
     void WholeGameDataLoad()
     {
+
+        //빌딩의 데이터, 세이브데이터를 불러온다.
+        //이것도 꽤나 데이터를 잡아먹는다. 그렇지만 로딩은 비동기적으로 이루어질 수가 없다
+        //씬로딩마냥 로딩바가 채워지고 이런걸 알 수 없다는 뜻이다. 안된거/된거 끝이다.
         wholeGameData = jsonManager.Load();
-        buildingDataList = jsonManager.LoadBuildingData();
+        buildingDataListArray = new List<BuildingData>[3];//어레이를 3개짜리로 지정해준다
+        for(int i = 0; i < 3; i++)
+        {
+            buildingDataListArray[i] = jsonManager.LoadBuildingData(i);
+            //각 스테이지의 데이터들을 싹다 로딩해준다
+            //되게 오래걸릴 예정이다.
+        }
+        pastSeconds = TimeSubtractionToSeconds(wholeGameData.lastPlayTime, gameStartTime);
+
+
     }
 
     private void OnApplicationQuit()
     {
         wholeGameData.lastPlayTime = System.DateTime.Now.ToString();
+        if (nowStage >= 0)
+        {
+            wholeGameData.ChangeStageData(nowGameManager.GetStageData(), nowStage);
+        }
         jsonManager.Save(wholeGameData);
+        StopCoroutine(TimerCoroutine());
         //일반종료시 끔
     }
 
     private void OnApplicationPause(bool pause)
     {
-        //jsonManager.Save(wholeGameData);
+        string pausedTime = System.DateTime.Now.ToString();
+        //일시정지한 시간을 잰다.
+        //홈화면으로 나갈 때의 함수이다. 강제종료도 될 수 있으니, 저장을 바로 해준다.
+        if (pause)
+        {
+            //일시정지를 시작했을 때 
+            isPaused = true;
+            if(nowStage >= 0)
+            {
+                wholeGameData.ChangeStageData(nowGameManager.GetStageData(), nowStage);
+            }
+            //게임데이터를 받아와서 저장해준다
+            jsonManager.Save(wholeGameData);
+        }
+        else
+        {
+            //일시정지를 풀었을 떄
+            isPaused = false;
+            string endTime = System.DateTime.Now.ToString();
+            gameTimer += TimeSubtractionToSeconds(pausedTime, endTime);//더해준당
+
+            //멈춘 시간이 얼마나 되는지 시간을 잰다.
+            //게임이 멈추면은 코루틴도 멈춘다. 그러기 위해서는 보정을 해주어야 한다.
+
+        }
         //강제종료시 끔
     }
 
@@ -141,4 +222,31 @@ public class SceneLoader : MonoBehaviour
 
         return seconds;
     }
+
+    public int TimeSubtractionToSeconds(string pastTime, DateTime latestTime)
+    {
+        DateTime past = DateTime.Parse(pastTime);
+        DateTime latest = latestTime;
+        //string to datetime
+        if (past == null || latest == null)
+        {
+            Debug.Log("time is null");
+            Application.Quit();
+            return 0;
+        }
+
+        TimeSpan span = latest - past;
+        int seconds = (int)span.TotalSeconds;
+        //Debug.Log("subtraction is " + seconds);
+
+        return seconds;
+    }
+
+
+    public void SetGameManager(GameManager manager)
+    {
+        nowGameManager = manager;
+    }
+
+
 }

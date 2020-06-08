@@ -35,6 +35,8 @@ public class MenuManager : MonoBehaviour
         stageDataArray = wholeGameData.stageArray;
         //값을 초기화해주는 작업
 
+
+        //마일리지가 얼마나 있느냐에 따라 해금이 되는 것. 나중에 또 고쳐줘야함.
         if (stageDataArray[0].mileage >= 50000)
         {
             isStageUnlocked[1] = true;
@@ -53,10 +55,12 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+
+    //구역버튼 클릭되면은 씬로딩을 한다. 씬 로딩은 나중에 애니메이션 넣어준다
     public void OnButtonClick(int index)
     {
-        //index = 1,2,3
-        if (!isStageUnlocked[index - 1])
+        //index = 0,1,2
+        if (!isStageUnlocked[index])
         {
             return;
         }

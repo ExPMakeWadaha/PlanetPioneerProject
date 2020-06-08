@@ -7,7 +7,7 @@
 {"buildingName":"apartment","type":1,"incomeCoin":30,"buildTime":18000,"cost":300,"sellCost":150,"width":4,"height":4,"mileage":200},
 {"buildingName":"generalBuilding","type":1,"incomeCoin":30,"buildTime":18000,"cost":300,"sellCost":150,"width":4,"height":4,"mileage":200},
 {"buildingName":"mobileTypeBuilding","type":1,"incomeCoin":110,"buildTime":18000,"cost":1500,"sellCost":750,"width":4,"height":4,"mileage":400},
-{"buildingName":"bridge","type":1,"incomeCoin":130,"buildTime":28800,"cost":2000,"sellCost":1000,"width":3,"height":10,"mileage":500},
+{"buildingName":"bridge","type":1,"incomeCoin":130,"buildTime":28800,"cost":2000,"sellCost":1000,"width":10,"height":3,"mileage":500},
 {"buildingName":"tunnel","type":1,"incomeCoin":130,"buildTime":28800,"cost":2000,"sellCost":1000,"width":3,"height":10,"mileage":500},
 {"buildingName":"waterway","type":1,"incomeCoin":150,"buildTime":28800,"cost":2500,"sellCost":1200,"width":3,"height":10,"mileage":500},
 {"buildingName":"district","type":1,"incomeCoin":300,"buildTime":43200,"cost":3000,"sellCost":1500,"width":10,"height":5,"mileage":1000},
@@ -27,7 +27,7 @@
 {"buildingName":"spaceStation","type":1,"incomeCoin":1000,"buildTime":129600,"cost":10000,"sellCost":5000,"width":10,"height":10,"mileage":3000},
 {"buildingName":"zone1Landmark","type":0,"incomeCoin":5,"buildTime":0,"cost":0,"sellCost":-1,"width":10,"height":10,"mileage":10000},
 {"buildingName":"zone2Landmark","type":0,"incomeCoin":50,"buildTime":90000,"cost":100000,"sellCost":-1,"width":10,"height":10,"mileage":20000},
-{"buildingName":"zon3Landmark","type":0,"incomeCoin":100,"buildTime":90000,"cost":1000000,"sellCost":-1,"width":10,"height":5,"mileage":30000},
+{"buildingName":"zone3Landmark","type":0,"incomeCoin":100,"buildTime":90000,"cost":1000000,"sellCost":-1,"width":10,"height":5,"mileage":30000},
 {"buildingName":"satelite1","type":0,"incomeCoin":100,"buildTime":18000,"cost":1300,"sellCost":-1,"width":5,"height":5,"mileage":5000},
 {"buildingName":"satelite2","type":0,"incomeCoin":100,"buildTime":18000,"cost":1000,"sellCost":-1,"width":5,"height":5,"mileage":8000},
 {"buildingName":"satelite3","type":0,"incomeCoin":100,"buildTime":18000,"cost":1000,"sellCost":-1,"width":5,"height":5,"mileage":10000}]

@@ -18,18 +18,15 @@ public class WholeGameData
     //TEST생성자입니다.
     public WholeGameData()
     {
-        
         stageArray = new StageData[3];
-        coin = 1000;
+        coin = 0;
         incompletedBuildingList = new List<Building>[3];
         for(int i = 0; i < 3; i++)
         {
             incompletedBuildingList[i] = new List<Building>();
             stageArray[i] = new StageData(i);
         }
-        
         lastPlayTime = System.DateTime.Now.ToString();
-
         id = "sanghun";
     }
 
@@ -37,6 +34,7 @@ public class WholeGameData
     public WholeGameData(StageData[] arr)
     {
         stageArray = arr;
+        coin = 0;
         incompletedBuildingList = new List<Building>[3];
         for (int i = 0; i < 3; i++)
         {

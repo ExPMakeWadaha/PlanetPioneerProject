@@ -82,7 +82,7 @@ public class OptionManager : MonoBehaviour
     {
         Application.Quit();
         //간단.
-    }   
+    }
     
     // Start is called before the first frame update
     void Start()
