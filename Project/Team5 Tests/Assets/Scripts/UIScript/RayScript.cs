@@ -14,6 +14,18 @@ public class RayScript : MonoBehaviour
     Camera camera;
     const string objectTag = "Building";  //게임오브젝트의 태그다. 고정이니까 const
     public cameraMove cameraMover;
+    Building targetBuilding;
+    //building object that now player is clicking
+
+    //200620 new script by sanghub
+    /// <summary>
+    /// i'm gonna make boundary of buildings
+    /// thats it
+    /// </summary>
+
+    const int negativeBound = -15;
+    const int positiveBound = 15;
+   
 
     void Start()
     {
@@ -38,6 +50,10 @@ public class RayScript : MonoBehaviour
                 else
                 {
                     cameraMover.BuildingTouched(true);
+                    targetBuilding = gameManager.FindBuilding(target);
+                    //you save targetbuilding on buttonDown
+                    //so you can give Building to GameManager on button an buttonUp
+
                 }
             }
         }
@@ -47,8 +63,10 @@ public class RayScript : MonoBehaviour
             {
                 return;
             }
-
-            target.transform.position = ScreenToWorld();
+            Vector3 pos = ScreenToWorld();
+            //we have to process this with gameManager
+            //because gameManager has BuildingList, so you can know collidings
+            target.transform.position = gameManager.OnBuildingCollision(targetBuilding, pos);
 
             //좌클릭을 누르는 동안 마우스 좌표를 받아와 월드좌표로 변환 후, 타겟을 마우스의 위치로 옮깁니다.
 
@@ -76,6 +94,7 @@ public class RayScript : MonoBehaviour
         //Vector3 normalCameraVector = new Vector3(Mathf.Sqrt(0.6f), Mathf.Sqrt(0.2f), -Mathf.Sqrt(0.2f));
         Vector3 cameraPos = camera.transform.position;
         Vector3 cameraToXZ = new Vector3(cameraPos.x - 1.5f * cameraPos.y, 0, cameraPos.z - Mathf.Sqrt(0.75f) * cameraPos.y);
+        //저기 이 부분에서 지금 고정값이 들어가있는데, 이게 들어가있는데도 왜 잘되는지 모르겠어요. 이거 원래 되면 안되거등요
 
         float cameraSqrMag = (cameraPos - cameraToXZ).magnitude;
         
@@ -97,11 +116,28 @@ public class RayScript : MonoBehaviour
  */
 
 
+        //반올림까지 여기서 해부리자
         x = Mathf.RoundToInt(x);
         z = Mathf.RoundToInt(z);
 
 
-        //반올림까지 여기서 해부리자
+        //this is for boundary check
+        if(x> positiveBound)
+        {
+            x = positiveBound;
+        }
+        else if (x < negativeBound)
+        {
+            x = negativeBound;
+        }
+        if (z > positiveBound)
+        {
+            z = positiveBound;
+        }
+        else if (z < negativeBound)
+        {
+            z = negativeBound;
+        }
         Vector3 pos = new Vector3(x, 0, z);
 
         return pos;

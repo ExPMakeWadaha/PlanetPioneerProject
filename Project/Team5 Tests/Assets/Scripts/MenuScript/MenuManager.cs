@@ -10,7 +10,7 @@ public class MenuManager : MonoBehaviour
     //dumy 오브젝트들을 일단 쓴다.
     public GameObject[] buttonObjects;
     Text[] textArray;
-    //버튼의 오브젝트들 dumy.
+    //버튼의 오브젝트들 dumy.   
 
     //이 아래로는 not a dumy
     SceneLoader sceneLoader;

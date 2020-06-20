@@ -113,6 +113,7 @@ public class SceneLoader : MonoBehaviour
         //여기다가 넣는 이유는, 로딩바가 중간에 멈추더라도 사람들은 로딩중이라고
         //생각하고 게임이 멈췄다고 생각은 안한다
 
+        //이거는 로딩바인데.. 로딩바다..
         Vector3 vector = new Vector3(0, (operation.progress - 0.5f) * 5, 0);
         while (!operation.isDone)
         {
@@ -155,6 +156,8 @@ public class SceneLoader : MonoBehaviour
             //각 스테이지의 데이터들을 싹다 로딩해준다
             //되게 오래걸릴 예정이다.
         }
+
+        //게임을 켜고 지난 시간들을 입력하는건데 사용하는곳도 없고 의미도 없다.
         pastSeconds = TimeSubtractionToSeconds(wholeGameData.lastPlayTime, gameStartTime);
 
 

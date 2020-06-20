@@ -31,10 +31,11 @@ public class GameManager : MonoBehaviour {
     bool isOptioning;   //환경설정창이 켜져있는지 판정하는 bool값
     List<int> incompletedIndexList; //미완성된 빌딩의 인덱스값들이다.
 
-    List<string> boughtBuildingList;
-    public OptionManager optionManager;
+    List<string> boughtBuildingList;    //내가 건물을 사놓고 안지었을 때, 그 건물을 샀는지에 대한 유무
+    public OptionManager optionManager; //
 
     const string objectTag = "Building";  //빌딩에 넣을 태그. Unity기능이니 잘 찾아보시요.
+    //태그는 RayScript에서 RayCast당한 오브젝트의 태그가 "Building"일 때만 타겟으로 지정할 수 있게 만들었다.
 
     //OptionManager에서 부르는 함수이다.
     public void Optioning()
@@ -53,11 +54,16 @@ public class GameManager : MonoBehaviour {
         incompletedIndexList = stageData.incompletedIndex;
         coin = sceneLoader.wholeGameData.coin;
         mileage = stageData.mileage;
+        //이 위까지는 그냥 stageData에서 받아온거다. 굳이 변수를 하나 더 만들어준 이유는
+        //쓰기 편하라고이다.
+
         boughtBuildingList = stageData.boughtBuilidng;
         if(boughtBuildingList == null)
         {
             boughtBuildingList = new List<string>();
         }
+        //단순한 버그처리용. 디버깅중에 이게 nullReferenceException이 자주 떠서 그렇다.
+
         coinIncomeSum = 0;  //초기화. 빌딩 지어질 떄마다 더해줄거. 초깃값은 onStageLoaded에서 정한다.
         coinTimer = 0;
 
@@ -79,9 +85,7 @@ public class GameManager : MonoBehaviour {
         OnStageLoaded();
         //현재 개수 몇개인지 세어준다.
         StartCoroutine(BuildCoroutine());
-        //코인을 몇개 얻게 될 지 더해준다.
-
-        //그 다음에 스테이지 로드 떄려준다
+        //빌드 코루틴에서 1초마다 체크를 해서 빌딩을 지어준다.
     }
 
     void Update()  
@@ -105,9 +109,7 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    //스트링을 파라미터로 받아서 리스트에서 찾는것보다, 그냥 어느빌딩인지의 데이터를 받는게 더 편하다.
-    //그 데이터 내에서 어떤 값을 쓸 줄 모르니까그렇다.
-    //이렇게 해도 C#은 객체복사가 아니어서 메모리 손실 많이 안난다. 포인터 전달이라 보면 된다
+    //Building객체를 새로 만들어주어야 하는경우, 로딩해서 짓는게 아니라, 실제로 게임내에서 사서 짓는경우
     void BuildStart(BuildingData data)
     {
 
@@ -130,6 +132,7 @@ public class GameManager : MonoBehaviour {
         //콜라이더의 싸이즈는 빌딩에 맞게 가로 세로를 넣어주낟.
     }
 
+    //이미 StageData에서 Building객체가 존재하기 때문에 새롭게 Building을 만들어 줄 필요가 없을경우
     void BuildStart(Building building)
     {
         //만약 로딩해서 불러온 거면은 새로운 객체를 만들어줄 필요가 없다.
@@ -145,6 +148,7 @@ public class GameManager : MonoBehaviour {
         BoxCollider collider = building.buildingObject.AddComponent<BoxCollider>();
         collider.size = new Vector3(data.width, 1, data.height);
         //빌딩오브젝트를 만들어주고, 콜라이더를 씌워서 클릭할 수 있게 만들어준다
+        //콜라이더를 안만들어주면은 rayCast가 안먹어요
         //콜라이더의 싸이즈는 빌딩에 맞게 가로 세로를 넣어주낟.
     }
 
@@ -277,8 +281,8 @@ public class GameManager : MonoBehaviour {
                 Building building = buildingList[incompletedIndexList[i]];
                 //Debug.Log(building.buildingName + " checking completed");
                 //지나간시간이 빌드타임보다 길면 되는거잖아.
-                //int buildTime = building.GetData().buildTime;
-                int buildTime = 0;  //디버그용으로 전부1초만에 지어짐 ㅋㅋ
+                int buildTime = building.GetData().buildTime;
+                //int buildTime = 0;  //디버그용으로 전부1초만에 지어짐 ㅋㅋ
                 if (buildTime < sceneLoader.TimeSubtractionToSeconds(building.buildStartTime, System.DateTime.Now))
                 {
                     BuildComplete(incompletedIndexList[i]);
@@ -305,22 +309,7 @@ public class GameManager : MonoBehaviour {
     //rayScript에서 실행하는 함수. changedOBject는 position이 변경될 오브젝트다.
     public void ChangeBuildingPosition(GameObject changedObject)
     {
-        Building building = null;   //못 찾았을 경우를 대비하여 null을 넣어준다
-        foreach(Building data in buildingList)
-        {
-            if(data.buildingObject == changedObject)
-            {
-                building = data;
-                //게임오브젝트를 찾아서 넣어준다
-                break;
-            }
-            
-        }
-        if(building == null)
-        {
-            Debug.Log("포지션변경 불가. building이 null이다");
-            return;
-        }
+        Building building = FindBuilding(changedObject);
 
         building.positionVector = changedObject.transform.position;
 
@@ -391,6 +380,28 @@ public class GameManager : MonoBehaviour {
         return buildingData;
     }
 
+    public Building FindBuilding(GameObject obj)
+    {
+        Building building = null;   //못 찾았을 경우를 대비하여 null을 넣어준다
+        foreach (Building data in buildingList)
+        {
+            if (data.buildingObject == obj)
+            {
+                building = data;
+                //게임오브젝트를 찾아서 넣어준다
+                break;
+            }
+
+        }
+        if (building == null)
+        {
+            Debug.Log("find 불가. building이 null이다");
+            return null;
+        }
+
+        return building;
+    }
+
     public void BuildRadomBuilding()
     {
         int randomNumber = UnityEngine.Random.Range(0, buildingDataList.Count);
@@ -399,6 +410,20 @@ public class GameManager : MonoBehaviour {
             randomNumber = UnityEngine.Random.Range(0, buildingDataList.Count);
         }
         BuildStart(buildingDataList[randomNumber]);
+    }
+
+    //when buildings collides each other
+    //RayScript.cs calls this method
+    public Vector3 OnBuildingCollision(Building building, Vector3 rawPos)
+    {
+        // 1. it returns building to know about width, height
+        // 2. it should know about the buildings that are colliding
+        // 3. so it can find the best positon between lots of colliding buildings;
+        // tlqkf akfdltnlqwl roTlqkf;
+
+
+        return new Vector3(0, 0, 0);
+
     }
 
 }
