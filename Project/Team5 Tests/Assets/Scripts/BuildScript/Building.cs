@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime;
-
+using UnityEngine.UI;
 
 [System.Serializable]
 public class Building        //빌딩 하나하나가 가지는 클래스.
@@ -10,6 +10,7 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
     public string buildingName;     //건물이름에 맞게 오브젝트를 가져와야한다
     BuildingData buildingData;      //그냥 빌딩 자체가 데이터를 가져버리면 되잖아.
                                     //stagedata에서도 이대로 저장되면 json이 너무 길어지니 안된다.
+    GameObject buildingUI;
                                     //private으로 해놓으면 제이슨에서 저장을 안한다. 그래서 json파일이 짧아져서 좋다.
     public int index;               //건물이 그 스테이지에서 몇 번째로 생긴 건물인지
     public Vector3 positionVector;             //기하와 벡터에서의 그 벡터 맞다. 공간좌표 맞다.     
@@ -43,7 +44,14 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
         //그냥 생성자다. 찬찬히 읽어보세요
         //데이터를 집어넣어준다는것만 중요합니다.
     }
-
+    public void SetUI(GameObject obj)
+    {
+        buildingUI = obj;
+    }
+    public GameObject GetUI()
+    {
+        return buildingUI;
+    }
     public bool IsBuildingNow()
     {
         return true;

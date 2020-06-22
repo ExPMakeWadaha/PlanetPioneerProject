@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
-
+    public enum UI
+    {
+        LoadingBar,
+        BuildStartButton,
+        NotBuildButton,
+        SellButton
+    }
 
     SceneLoader sceneLoader;    //여기서 정보를 다 땡겨오는거다.
     StageData stageData;    //현재 스테이지에서 가지고 있을 데이터. 
     int nowStage;    //현재 스테이지. 0 1 2 이다
     public int coin;        //현재 가지고 있는 돈
     public int mileage;        //마일리지
-    
+
     //public으로 지정한 객체와 변수는 이런식으로 Unity창에서 초기화 할 수 있다. 자세한 내용은 Unity Public변수 초기화를 검색하자
     //Prefab이 뭐냐고 물을텐데, Prefab만드는 법도 구글링하자
 
@@ -36,6 +43,8 @@ public class GameManager : MonoBehaviour {
 
     const string objectTag = "Building";  //빌딩에 넣을 태그. Unity기능이니 잘 찾아보시요.
     //태그는 RayScript에서 RayCast당한 오브젝트의 태그가 "Building"일 때만 타겟으로 지정할 수 있게 만들었다.
+    public GameObject buildingUIPrefab;
+
 
     //OptionManager에서 부르는 함수이다.
     public void Optioning()
@@ -58,7 +67,7 @@ public class GameManager : MonoBehaviour {
         //쓰기 편하라고이다.
 
         boughtBuildingList = stageData.boughtBuilidng;
-        if(boughtBuildingList == null)
+        if (boughtBuildingList == null)
         {
             boughtBuildingList = new List<string>();
         }
@@ -73,22 +82,23 @@ public class GameManager : MonoBehaviour {
         //모든 데이터는 씬매니저를 통해 가져온다
 
         //1스테이지인데 빌딩이 아무것도 없다는 뜻이면 랜드마크가 없다는거다.
-        if (nowStage == 0 && buildingList.Count == 0)
-        {
-            BuildStage1LandMark();
-          //랜드마크 지어주낟
-        }
 
-        
+
+
 
         nowBuildingIndex = buildingList.Count;
         OnStageLoaded();
         //현재 개수 몇개인지 세어준다.
         StartCoroutine(BuildCoroutine());
+        if (nowStage == 0 && buildingList.Count == 0)
+        {
+            BuildStage1LandMark();
+            //랜드마크 지어주낟
+        }
         //빌드 코루틴에서 1초마다 체크를 해서 빌딩을 지어준다.
     }
 
-    void Update()  
+    void Update()
     {
         //무작위로 생성하는거. 디버그용임
         if (Input.GetKeyDown(KeyCode.A))
@@ -102,14 +112,15 @@ public class GameManager : MonoBehaviour {
     void OnStageLoaded()
     {
         //지어진 빌딩이 뭔지 확인해서 짓는다.
-        foreach(Building building in buildingList)
+        foreach (Building building in buildingList)
         {
             BuildingLoad(building);
             coinIncomeSum += building.GetData().incomeCoin;
         }
     }
 
-    //Building객체를 새로 만들어주어야 하는경우, 로딩해서 짓는게 아니라, 실제로 게임내에서 사서 짓는경우
+    //Building객체를 새로 만들어주어야 하는경우,
+    //로딩해서 짓는게 아니라, 실제로 게임내에서 사서 짓는경우
     void BuildStart(BuildingData data)
     {
 
@@ -124,12 +135,17 @@ public class GameManager : MonoBehaviour {
         //빌딩이 0개면 인덱스도 0이다. 인덱스는 1부터시작이 아니라 0부터시작이니까 0넣어주고 1더해줘야해!!
         building.isCompleted = false;
 
-        building.buildingObject =Instantiate(data.incompletedPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        building.buildingObject = Instantiate(data.incompletedPrefab, new Vector3(0, 0, 0), Quaternion.identity);
         building.buildingObject.tag = objectTag;
         BoxCollider collider = building.buildingObject.AddComponent<BoxCollider>();
-        collider.size = new Vector3(data.width,1, data.height);
+        collider.size = new Vector3(data.width, 1, data.height);
         //빌딩오브젝트를 만들어주고, 콜라이더를 씌워서 클릭할 수 있게 만들어준다
         //콜라이더의 싸이즈는 빌딩에 맞게 가로 세로를 넣어주낟.
+
+        GameObject uiObject = Instantiate(buildingUIPrefab, building.buildingObject.transform, false);
+        building.SetUI(uiObject);
+
+
     }
 
     //이미 StageData에서 Building객체가 존재하기 때문에 새롭게 Building을 만들어 줄 필요가 없을경우
@@ -139,7 +155,7 @@ public class GameManager : MonoBehaviour {
         //isLoaded가 true면은 이미 buildingList에 있는 놈인거다.
 
         BuildingData data = building.GetData();
-        
+
         //빌딩 인덱스 현재거를 넣어준 다음에!!!! 1을 더해주어야한다
         //빌딩이 0개면 인덱스도 0이다. 인덱스는 1부터시작이 아니라 0부터시작이니까 0넣어주고 1더해줘야해!!
 
@@ -150,14 +166,16 @@ public class GameManager : MonoBehaviour {
         //빌딩오브젝트를 만들어주고, 콜라이더를 씌워서 클릭할 수 있게 만들어준다
         //콜라이더를 안만들어주면은 rayCast가 안먹어요
         //콜라이더의 싸이즈는 빌딩에 맞게 가로 세로를 넣어주낟.
+        GameObject uiObject = Instantiate(buildingUIPrefab, building.buildingObject.transform, false);
+        building.SetUI(uiObject);
     }
 
     void BuildingLoad(Building building)
     {
         Debug.Log(building.buildingName);
-        
+
         //지나간 시간이 얼마나 되는지 확인.
-        BuildingData buildingData = FindBuildingData(building.buildingName) ;   //처음에 자동으로 널값이 들어가질 않는다.
+        BuildingData buildingData = FindBuildingData(building.buildingName);   //처음에 자동으로 널값이 들어가질 않는다.
         //짓고 난 다음 시간이 얼마나 걸렸는지. 이걸로 돈을 얼마나 줄지 판정해야한다
 
         if (buildingData == null)
@@ -220,16 +238,19 @@ public class GameManager : MonoBehaviour {
 
         building.buildingObject = Instantiate(data.prefab, building.positionVector, Quaternion.identity);
         building.buildingObject.tag = objectTag;
-        BoxCollider collider =  building.buildingObject.AddComponent<BoxCollider>();
+        BoxCollider collider = building.buildingObject.AddComponent<BoxCollider>();
         collider.size = new Vector3(data.width, 1, data.height);
-        //나머지는 건설중오브젝트 만드는거랑 똑같다
 
-        mileage += data.mileage *(nowStage +1);
+        //나머지는 건설중오브젝트 만드는거랑 똑같다
+        GameObject uiObject = Instantiate(buildingUIPrefab, building.buildingObject.transform, false);
+        building.SetUI(uiObject);
+
+        mileage += data.mileage * (nowStage + 1);
         //마일리지 한다.
-        
+
 
         Debug.Log("건설 끝났어");
-        
+
     }
 
     //이미 다 지어진 빌딩을 짓는 함수. 로딩떄 부름
@@ -245,6 +266,10 @@ public class GameManager : MonoBehaviour {
         building.buildingObject.tag = objectTag;
         BoxCollider collider = building.buildingObject.AddComponent<BoxCollider>();
         collider.size = new Vector3(data.width, 1, data.height);
+
+        GameObject uiObject = Instantiate(buildingUIPrefab, building.buildingObject.transform, false);
+        building.SetUI(uiObject);
+
         //나머지는 건설중오브젝트 만드는거랑 똑같다
         Debug.Log("건설 끝났어");
 
@@ -253,7 +278,7 @@ public class GameManager : MonoBehaviour {
 
     void BuildStage1LandMark()
     {
-         //먼저 데이터부터 뽑아야한다
+        //먼저 데이터부터 뽑아야한다
         string name = "zone1Landmark";
         //빌딩이름이 뭔지 제이슨에서 찾아준다. 귀찮ㅇㅁ.
         BuildingData landmarkData = FindBuildingData(name);
@@ -271,15 +296,16 @@ public class GameManager : MonoBehaviour {
         //Building landmark = new Building()
     }
 
-    IEnumerator BuildCoroutine(){
-        while(true)
+    IEnumerator BuildCoroutine() {
+        while (true)
         {
 
             for (int i = 0; i < incompletedIndexList.Count; i++)
             {
                 //Debug.Log(incompletedIndex.Count + " count");
                 Building building = buildingList[incompletedIndexList[i]];
-                //Debug.Log(building.buildingName + " checking completed");
+                SetBuildingUI(building, UI.LoadingBar); //200622 just a test. you can erase this line
+                
                 //지나간시간이 빌드타임보다 길면 되는거잖아.
                 int buildTime = building.GetData().buildTime;
                 //int buildTime = 0;  //디버그용으로 전부1초만에 지어짐 ㅋㅋ
@@ -292,7 +318,7 @@ public class GameManager : MonoBehaviour {
                     //그러면 미완성 리스트에서 빼준당.
                     i--;
                     //하나를 뺴주면은 인덱스가 하나씩 당겨진다. i도 그거에 맞게 당겨줘야한다.
-                
+
                 }
             }
             CoinIncome();
@@ -321,10 +347,10 @@ public class GameManager : MonoBehaviour {
     {
         coinTimer++;
         optionManager.ChangeText(coin, coinIncomeSum, mileage, coinTimer);
-        if(coinTimer >= 10)
+        if (coinTimer >= 10)
         {
             coinTimer = 0;
-            coin += coinIncomeSum * (nowStage+1);
+            coin += coinIncomeSum * (nowStage + 1);
         }
 
         //코인을 늘려준다. 스테이지 + 1만큼
@@ -373,7 +399,7 @@ public class GameManager : MonoBehaviour {
             }
             //그 이름을 가지는게 있는지 빌딩데이터에서 찾아야한다.
         }
-        if(buildingData == null)
+        if (buildingData == null)
         {
             Debug.Log("find building data null");
         }
@@ -414,18 +440,129 @@ public class GameManager : MonoBehaviour {
 
     //when buildings collides each other
     //RayScript.cs calls this method
-    public Vector3 OnBuildingCollision(Building building, Vector3 rawPos)
+    public bool IsBuildingColliding(Building building, Vector3 rawPos)
     {
         // 1. it returns building to know about width, height
         // 2. it should know about the buildings that are colliding
         // 3. so it can find the best positon between lots of colliding buildings;
         // tlqkf akfdltnlqwl roTlqkf;
 
+        /*
+         * 체를 거른다고 생각하면 됩니다.
+         * 모든 모서리를 먼저 비교해보고, 그다음엔 다른 빌딩과 겹치는지 보는겁니다.
+         */
 
-        return new Vector3(0, 0, 0);
+        int xBound = building.GetData().width/2;
+        int zBound = building.GetData().height/2;
+        if (rawPos.x > 0)
+        {
+            if (Mathf.RoundToInt(RayScript.positiveBound - rawPos.x) < xBound)
+            {
+                Debug.Log("xPositive Bound");
+                return true;
+                //colliding
+            }
+            //just think about positive bound.
+        }
+        else
+        {
+            if (Mathf.RoundToInt(rawPos.x - RayScript.negativeBound) < xBound)
+            {
+                Debug.Log("xNegative Bound");
+                Debug.Log(Mathf.RoundToInt(rawPos.x - RayScript.negativeBound) + " and bound is " + xBound);
+                return true;
+                //colliding
+            }
+        }
+        if (rawPos.z > 0)
+        {
+            if (Mathf.RoundToInt(RayScript.positiveBound - rawPos.z) < zBound)
+            {
+                Debug.Log("zPositive Bound");
+                return true;
+                //colliding
+            }
+            //just think about positive bound.
+        }
+        else
+        {
+            if (Mathf.RoundToInt(rawPos.z - RayScript.negativeBound) < zBound)
+            {
+                Debug.Log("zNegative Bound");
+                return true;
+                //colliding
+            }
+        }
+
+
+        //we checked every bounds, now we should check other buildings
+        foreach (Building other in buildingList)
+        {
+            if (other != building)
+            {
+                bool xBool = false;
+                Vector3 otherPos = other.positionVector;
+                int otherXBound = other.GetData().width / 2;
+                int otherZBound = other.GetData().height / 2;
+                //check other ones vector
+                int xDistnace = Mathf.Abs(Mathf.RoundToInt(otherPos.x - rawPos.x));
+                if (xDistnace < xBound +otherXBound)
+                {
+                    Debug.Log("Building XBound with " + other.buildingName
+                        + " distance in " + xDistnace);
+                    Debug.Log("Bound is " + xBound + otherXBound);
+                    xBool = true;
+                }
+                int zDistnace = Mathf.Abs(Mathf.RoundToInt(otherPos.z - rawPos.z));
+                if (zDistnace < zBound + otherZBound)
+                {
+                    Debug.Log("Building zBound with " + other.buildingName
+                     + " distance in " + zDistnace);
+                    Debug.Log("Bound is " + zBound + otherZBound);
+                    if (xBool)
+                    {
+                        return true;
+                    }
+                }
+
+            }
+
+        }
+
+        Debug.Log("its not colliding");
+        return false;
 
     }
 
+
+    //change UI with enum.
+    public void SetBuildingUI(Building building,UI uiEnum)
+    {
+        //now u do it with dumy.
+        Text dumyText = building.GetUI().GetComponentInChildren<Text>();
+        StringBuilder strBuilder = new StringBuilder();
+        if (uiEnum == UI.LoadingBar)
+        {
+            int leftTime = building.GetData().buildTime - sceneLoader.TimeSubtractionToSeconds(building.buildStartTime, System.DateTime.Now);
+
+            strBuilder.Append("now Loading\n");
+            strBuilder.Append(leftTime.ToString());
+            dumyText.text = strBuilder.ToString();
+        }
+        else if (uiEnum == UI.BuildStartButton)
+        {
+            strBuilder.Append("this is buildStartButton");
+            dumyText.text = strBuilder.ToString();
+        }
+        else if (uiEnum == UI.NotBuildButton)
+        {
+            dumyText.text = "this is XButton";
+        }
+        else if (uiEnum == UI.SellButton)
+        {
+            dumyText.text = "this is Sellbutton";
+        }
+    }
 }
 
 

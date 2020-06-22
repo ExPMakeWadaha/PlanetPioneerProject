@@ -438,6 +438,8 @@ MonoBehaviour:
   buildingList: []
   buildingDataList: []
   optionManager: {fileID: 1646703917}
+  buildingUIPrefab: {fileID: 1205692579118193291, guid: 7708958f797e535479810ab2da9b0aaf,
+    type: 3}
 --- !u!4 &257183903
 Transform:
   m_ObjectHideFlags: 0

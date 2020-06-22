@@ -20,18 +20,22 @@ public class RayScript : MonoBehaviour
     //200620 new script by sanghub
     /// <summary>
     /// i'm gonna make boundary of buildings
-    /// thats it
+    /// if you drag and drop buildings,
+    /// it checks if it is colliding with other building, or boundary
+    /// if it is colliding, it returns to origin position
+    /// if it's not, it changes its position
     /// </summary>
 
-    const int negativeBound = -15;
-    const int positiveBound = 15;
+    Vector3 originalPosition;
+    public const int negativeBound = -15;
+    public const int positiveBound = 15;
    
 
     void Start()
     {
         
         camera = Camera.main; // 메인카메라를 호출합니다. Start에 넣어야 작동하더라구요
-
+        originalPosition = Vector3.zero;
     }
 
    
@@ -51,6 +55,7 @@ public class RayScript : MonoBehaviour
                 {
                     cameraMover.BuildingTouched(true);
                     targetBuilding = gameManager.FindBuilding(target);
+                    originalPosition = target.transform.position;
                     //you save targetbuilding on buttonDown
                     //so you can give Building to GameManager on button an buttonUp
 
@@ -58,7 +63,7 @@ public class RayScript : MonoBehaviour
             }
         }
          if (Input.GetMouseButton(0))
-        {
+         {
             if(target == null)
             {
                 return;
@@ -66,11 +71,13 @@ public class RayScript : MonoBehaviour
             Vector3 pos = ScreenToWorld();
             //we have to process this with gameManager
             //because gameManager has BuildingList, so you can know collidings
-            target.transform.position = gameManager.OnBuildingCollision(targetBuilding, pos);
+            //target.transform.position = gameManager.OnBuildingCollision(targetBuilding, pos);
 
             //좌클릭을 누르는 동안 마우스 좌표를 받아와 월드좌표로 변환 후, 타겟을 마우스의 위치로 옮깁니다.
-
-        }
+            target.transform.position = pos;
+            //gameManager.ChangeBuildingPosition(target);
+            
+         }
 
         if (Input.GetMouseButtonUp(0))
         {
@@ -79,9 +86,20 @@ public class RayScript : MonoBehaviour
             {
                 return;
             }
-            Debug.Log("마우스 버튼 업");
+
             Vector3 positionVector = ScreenToWorld();
-            target.transform.position = positionVector;
+            
+            if (gameManager.IsBuildingColliding(targetBuilding, positionVector))
+            {
+                //onColliding
+
+                target.transform.position = originalPosition;
+            }
+            else
+            {
+                //not colliding
+                target.transform.position = positionVector;
+            }
             gameManager.ChangeBuildingPosition(target);
             target = null;
             //이제 타겟을 널로 만들어줍니다.
