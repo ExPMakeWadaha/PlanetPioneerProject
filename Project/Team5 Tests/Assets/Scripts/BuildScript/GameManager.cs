@@ -10,9 +10,9 @@ public class GameManager : MonoBehaviour {
 
     public enum UI
     {
-        LoadingBar,
-        BuildStartButton,
-        NotBuildButton,
+        ProgressBar,
+        VButton,
+        XButton,
         SellButton
     }
 
@@ -38,12 +38,14 @@ public class GameManager : MonoBehaviour {
     bool isOptioning;   //환경설정창이 켜져있는지 판정하는 bool값
     List<int> incompletedIndexList; //미완성된 빌딩의 인덱스값들이다.
 
-    List<string> boughtBuildingList;    //내가 건물을 사놓고 안지었을 때, 그 건물을 샀는지에 대한 유무
+    //List<string> boughtBuildingList;    //내가 건물을 사놓고 안지었을 때, 그 건물을 샀는지에 대한 유무
     public OptionManager optionManager; //
 
     const string objectTag = "Building";  //빌딩에 넣을 태그. Unity기능이니 잘 찾아보시요.
     //태그는 RayScript에서 RayCast당한 오브젝트의 태그가 "Building"일 때만 타겟으로 지정할 수 있게 만들었다.
-    public GameObject buildingUIPrefab;
+    public GameObject sellUIPrefab;
+    public GameObject buyingUIPrefab;
+    public GameObject progressUIPrefab;
 
 
     //OptionManager에서 부르는 함수이다.
@@ -53,7 +55,7 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    void Start()
+    void Awake()
     {
         sceneLoader = SceneLoader.singleTone;   //스태틱변수는 클래스로 바로 접근가능.
         nowStage = sceneLoader.nowStage;        //그냥 쓰기 편하려고 게임매니저로 가져옴
@@ -66,12 +68,12 @@ public class GameManager : MonoBehaviour {
         //이 위까지는 그냥 stageData에서 받아온거다. 굳이 변수를 하나 더 만들어준 이유는
         //쓰기 편하라고이다.
 
-        boughtBuildingList = stageData.boughtBuilidng;
+        /*boughtBuildingList = stageData.boughtBuilidng;
         if (boughtBuildingList == null)
         {
             boughtBuildingList = new List<string>();
         }
-        //단순한 버그처리용. 디버깅중에 이게 nullReferenceException이 자주 떠서 그렇다.
+        *///단순한 버그처리용. 디버깅중에 이게 nullReferenceException이 자주 떠서 그렇다.
 
         coinIncomeSum = 0;  //초기화. 빌딩 지어질 떄마다 더해줄거. 초깃값은 onStageLoaded에서 정한다.
         coinTimer = 0;
@@ -142,8 +144,8 @@ public class GameManager : MonoBehaviour {
         //빌딩오브젝트를 만들어주고, 콜라이더를 씌워서 클릭할 수 있게 만들어준다
         //콜라이더의 싸이즈는 빌딩에 맞게 가로 세로를 넣어주낟.
 
-        GameObject uiObject = Instantiate(buildingUIPrefab, building.buildingObject.transform, false);
-        building.SetUI(uiObject);
+        GameObject uiObject = Instantiate(progressUIPrefab, building.buildingObject.transform, false);
+        building.SetProgressUI(uiObject);
 
 
     }
@@ -166,8 +168,8 @@ public class GameManager : MonoBehaviour {
         //빌딩오브젝트를 만들어주고, 콜라이더를 씌워서 클릭할 수 있게 만들어준다
         //콜라이더를 안만들어주면은 rayCast가 안먹어요
         //콜라이더의 싸이즈는 빌딩에 맞게 가로 세로를 넣어주낟.
-        GameObject uiObject = Instantiate(buildingUIPrefab, building.buildingObject.transform, false);
-        building.SetUI(uiObject);
+        GameObject uiObject = Instantiate(progressUIPrefab, building.buildingObject.transform, false);
+        building.SetProgressUI(uiObject);
     }
 
     void BuildingLoad(Building building)
@@ -242,8 +244,8 @@ public class GameManager : MonoBehaviour {
         collider.size = new Vector3(data.width, 1, data.height);
 
         //나머지는 건설중오브젝트 만드는거랑 똑같다
-        GameObject uiObject = Instantiate(buildingUIPrefab, building.buildingObject.transform, false);
-        building.SetUI(uiObject);
+        GameObject uiObject = Instantiate(sellUIPrefab, building.buildingObject.transform, false);
+        building.SetSellUI(uiObject);
 
         mileage += data.mileage * (nowStage + 1);
         //마일리지 한다.
@@ -253,7 +255,7 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    //이미 다 지어진 빌딩을 짓는 함수. 로딩떄 부름
+    //이미 다 지어진 빌딩을 짓는 함수. scene 로딩떄 부름
     void BuildComplete(Building building)
     {
         //index는 buildingList에서 완료된 것의 index를 받는다
@@ -267,8 +269,8 @@ public class GameManager : MonoBehaviour {
         BoxCollider collider = building.buildingObject.AddComponent<BoxCollider>();
         collider.size = new Vector3(data.width, 1, data.height);
 
-        GameObject uiObject = Instantiate(buildingUIPrefab, building.buildingObject.transform, false);
-        building.SetUI(uiObject);
+        GameObject uiObject = Instantiate(sellUIPrefab, building.buildingObject.transform, false);
+        building.SetSellUI(uiObject);
 
         //나머지는 건설중오브젝트 만드는거랑 똑같다
         Debug.Log("건설 끝났어");
@@ -304,7 +306,8 @@ public class GameManager : MonoBehaviour {
             {
                 //Debug.Log(incompletedIndex.Count + " count");
                 Building building = buildingList[incompletedIndexList[i]];
-                SetBuildingUI(building, UI.LoadingBar); //200622 just a test. you can erase this line
+                UpdateProgressUI(building);
+                //update progression of constructing Buildings
                 
                 //지나간시간이 빌드타임보다 길면 되는거잖아.
                 int buildTime = building.GetData().buildTime;
@@ -377,9 +380,9 @@ public class GameManager : MonoBehaviour {
             return;
             //못사면 그냥 리턴
         }
-
+        
         coin -= data.cost;
-        boughtBuildingList.Add(name);
+        //boughtBuildingList.Add(name);
 
         //사면은 UI에 버튼이 달라지거나 하는 효과를 넣는다.
         //UI나오고 나서 해야함
@@ -534,35 +537,28 @@ public class GameManager : MonoBehaviour {
 
     }
 
-
-    //change UI with enum.
-    public void SetBuildingUI(Building building,UI uiEnum)
+    
+   /// <summary>
+   /// Every building has UI : xButton, yButton, progressBar, progressText
+   /// It controls when building UI needs to change
+   /// change Progression of bar and text. now it's only text. because there are no bar 
+   /// </summary>
+   /// <param name="building"> give Buidling Data as Buidling</param>
+    public void UpdateProgressUI(Building building)
     {
-        //now u do it with dumy.
+        //now u do it with dumy. better change next time
+        
+        
         Text dumyText = building.GetUI().GetComponentInChildren<Text>();
         StringBuilder strBuilder = new StringBuilder();
-        if (uiEnum == UI.LoadingBar)
-        {
-            int leftTime = building.GetData().buildTime - sceneLoader.TimeSubtractionToSeconds(building.buildStartTime, System.DateTime.Now);
+        int leftTime = building.GetData().buildTime - sceneLoader.TimeSubtractionToSeconds(building.buildStartTime, System.DateTime.Now);
 
-            strBuilder.Append("now Loading\n");
-            strBuilder.Append(leftTime.ToString());
-            dumyText.text = strBuilder.ToString();
-        }
-        else if (uiEnum == UI.BuildStartButton)
-        {
-            strBuilder.Append("this is buildStartButton");
-            dumyText.text = strBuilder.ToString();
-        }
-        else if (uiEnum == UI.NotBuildButton)
-        {
-            dumyText.text = "this is XButton";
-        }
-        else if (uiEnum == UI.SellButton)
-        {
-            dumyText.text = "this is Sellbutton";
-        }
+        strBuilder.Append("now Loading\n");
+        strBuilder.Append(leftTime.ToString());
+        dumyText.text = strBuilder.ToString();
     }
+
+
 }
 
 
