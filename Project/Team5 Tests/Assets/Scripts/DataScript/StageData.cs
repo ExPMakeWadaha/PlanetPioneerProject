@@ -15,7 +15,7 @@ public class StageData
     public bool[] achievementArray;            //업적 달성한게 뭔지
     public List<int> incompletedIndex;         //미완성된 건물의 인덱스
     public List<string> boughtBuilidng;        //구매해놓고 안산 건물.
-
+    public string lastPlayTime;                        //마지막 플탐을 알아야 건물을 세운다
 
 
     //게임 처음 시작할 때의 생성자입니다.
@@ -46,6 +46,7 @@ public class StageData
         progressRate = 0;
         achievementArray = new bool[10];
         boughtBuilidng = new List<string>();
+        lastPlayTime = System.DateTime.Now.ToString();
         for (int i = 0; i < 10; i++)
         {
             achievementArray[i] = false;

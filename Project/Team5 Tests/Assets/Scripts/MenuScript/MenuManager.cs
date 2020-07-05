@@ -9,6 +9,7 @@ public class MenuManager : MonoBehaviour
     // Start is called before the first frame update
     //dumy 오브젝트들을 일단 쓴다.
     public GameObject[] buttonObjects;
+    public GameObject[] stageLockObject;
     Text[] textArray;
     //버튼의 오브젝트들 dumy.   
 
@@ -30,12 +31,13 @@ public class MenuManager : MonoBehaviour
         textArray = new Text[3];
         //스태틱변수는 이렇게 클래스에서 바로 받아올 수 있따.
         isStageUnlocked = new bool[3];
+        /*
         for (int i = 0; i < 3; i++)
         {
             textArray[i] = buttonObjects[i].GetComponentInChildren<Text>();
             isStageUnlocked[i] = false;
             //text를 받아온다.
-        }
+        }*/
         isStageUnlocked[0] = true;
         wholeGameData = sceneLoader.wholeGameData;
         stageDataArray = wholeGameData.stageArray;
@@ -49,7 +51,7 @@ public class MenuManager : MonoBehaviour
         }
         else
         {
-            textArray[1].text = "2 section is LOCKED";
+            stageLockObject[0].SetActive(true);
         }
         if (stageDataArray[1].mileage >= 100000)
         {
@@ -57,7 +59,7 @@ public class MenuManager : MonoBehaviour
         }
         else
         {
-            textArray[2].text = "3 section is LOCKED";
+            stageLockObject[1].SetActive(true);
         }
 
        // LineMaker();

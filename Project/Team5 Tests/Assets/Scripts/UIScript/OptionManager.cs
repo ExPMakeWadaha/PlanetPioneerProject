@@ -129,9 +129,13 @@ public class OptionManager : MonoBehaviour
         incomeSumText.text = incomeSum.ToString();
         int mileagePercent = 10 * mileage / wholeMileage[stage];
         mileageText.text = mileagePercent.ToString();
-        if (nowStar >= 10)
+        if (nowStar >= 9)
         {
             return;
+        }
+        if(mileagePercent >= 10)
+        {
+            mileagePercent = 9;
         }
         if (nowStar < mileagePercent)
         {
@@ -154,12 +158,12 @@ public class OptionManager : MonoBehaviour
         if (isStoreOpened)
         {
             storeScrollObject.SetActive(false);
-            cameraMover.Buying(true);
+            cameraMover.Buying(false);
         }
         else
         {
             storeScrollObject.SetActive(true);
-            cameraMover.Buying(false);
+            cameraMover.Buying(true);
         }
         isStoreOpened = !isStoreOpened;
     }
@@ -182,7 +186,7 @@ public class OptionManager : MonoBehaviour
         buildingDataList = gameManager.buildingDataList;
 
         RectTransform contentRect = contentObject.GetComponent<RectTransform>();
-        float height = 250 * (buildingDataList.Count -5);
+        float height = 250 * (buildingDataList.Count -3);
         contentRect.sizeDelta = new Vector2(0, height);
 
         //코인텍스트가 7번 차일드더라..
@@ -229,11 +233,11 @@ public class OptionManager : MonoBehaviour
 
             if (i < 3)
             {
-                i += 3;
+                i += 2;
             }
             else if (i < 6)
             {
-                i += 3;
+                i = 5;
             }
 
 

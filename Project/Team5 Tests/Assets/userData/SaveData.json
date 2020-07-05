@@ -1,0 +1,328 @@
+{
+    "stageArray": [
+        {
+            "stageIndex": 0,
+            "buildingList": [
+                {
+                    "buildingName": "zone1Landmark",
+                    "index": 0,
+                    "positionVector": {
+                        "x": -8.0,
+                        "y": 0.0,
+                        "z": -9.0
+                    },
+                    "isCompleted": true,
+                    "buildStartTime": "2020-07-05 PM 7:36:11",
+                    "buildingObject": {
+                        "instanceID": -244436
+                    }
+                },
+                {
+                    "buildingName": "baggage",
+                    "index": 1,
+                    "positionVector": {
+                        "x": -7.0,
+                        "y": 0.0,
+                        "z": 4.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 6:36:26",
+                    "buildingObject": {
+                        "instanceID": -244458
+                    }
+                },
+                {
+                    "buildingName": "windrad",
+                    "index": 2,
+                    "positionVector": {
+                        "x": 1.0,
+                        "y": 0.0,
+                        "z": -7.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:36:28",
+                    "buildingObject": {
+                        "instanceID": -244866
+                    }
+                },
+                {
+                    "buildingName": "antenna",
+                    "index": 3,
+                    "positionVector": {
+                        "x": 11.0,
+                        "y": 0.0,
+                        "z": -12.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:36:33",
+                    "buildingObject": {
+                        "instanceID": -245274
+                    }
+                },
+                {
+                    "buildingName": "satellite2",
+                    "index": 4,
+                    "positionVector": {
+                        "x": 10.0,
+                        "y": 0.0,
+                        "z": -2.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:36:41",
+                    "buildingObject": {
+                        "instanceID": -245682
+                    }
+                },
+                {
+                    "buildingName": "planet1",
+                    "index": 5,
+                    "positionVector": {
+                        "x": -6.0,
+                        "y": 0.0,
+                        "z": 9.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:45:51",
+                    "buildingObject": {
+                        "instanceID": -246090
+                    }
+                }
+            ],
+            "mileage": 160000,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "boughtBuilidng": [],
+            "lastPlayTime": "2020-07-05 PM 7:36:09"
+        },
+        {
+            "stageIndex": 1,
+            "buildingList": [
+                {
+                    "buildingName": "zone2Landmark",
+                    "index": 0,
+                    "positionVector": {
+                        "x": 10.0,
+                        "y": 0.0,
+                        "z": -9.0
+                    },
+                    "isCompleted": true,
+                    "buildStartTime": "2020-07-02 PM 7:40:50",
+                    "buildingObject": {
+                        "instanceID": -116024
+                    }
+                },
+                {
+                    "buildingName": "antenna",
+                    "index": 1,
+                    "positionVector": {
+                        "x": -7.0,
+                        "y": 0.0,
+                        "z": 10.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:41:20",
+                    "buildingObject": {
+                        "instanceID": -116070
+                    }
+                },
+                {
+                    "buildingName": "apartment",
+                    "index": 2,
+                    "positionVector": {
+                        "x": -10.0,
+                        "y": 0.0,
+                        "z": -9.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:41:25",
+                    "buildingObject": {
+                        "instanceID": -116472
+                    }
+                },
+                {
+                    "buildingName": "planet3",
+                    "index": 3,
+                    "positionVector": {
+                        "x": 9.0,
+                        "y": 0.0,
+                        "z": 3.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:41:49",
+                    "buildingObject": {
+                        "instanceID": -116874
+                    }
+                },
+                {
+                    "buildingName": "planet2",
+                    "index": 4,
+                    "positionVector": {
+                        "x": -13.0,
+                        "y": 0.0,
+                        "z": 8.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:43:13",
+                    "buildingObject": {
+                        "instanceID": -117276
+                    }
+                },
+                {
+                    "buildingName": "zone2Landmark",
+                    "index": 5,
+                    "positionVector": {
+                        "x": 1.0,
+                        "y": 0.0,
+                        "z": 10.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:43:18",
+                    "buildingObject": {
+                        "instanceID": -117678
+                    }
+                },
+                {
+                    "buildingName": "baggage",
+                    "index": 6,
+                    "positionVector": {
+                        "x": -3.0,
+                        "y": 0.0,
+                        "z": -1.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:43:30",
+                    "buildingObject": {
+                        "instanceID": -118080
+                    }
+                },
+                {
+                    "buildingName": "windrad",
+                    "index": 7,
+                    "positionVector": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:44:06",
+                    "buildingObject": {
+                        "instanceID": -118482
+                    }
+                },
+                {
+                    "buildingName": "Underground entrance",
+                    "index": 8,
+                    "positionVector": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:45:00",
+                    "buildingObject": {
+                        "instanceID": -124780
+                    }
+                }
+            ],
+            "mileage": 120000,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+            ],
+            "boughtBuilidng": [],
+            "lastPlayTime": "2020-07-05 PM 7:36:09"
+        },
+        {
+            "stageIndex": 2,
+            "buildingList": [
+                {
+                    "buildingName": "zone3Landmark",
+                    "index": 0,
+                    "positionVector": {
+                        "x": -8.0,
+                        "y": 0.0,
+                        "z": -5.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:39:00",
+                    "buildingObject": {
+                        "instanceID": -231792
+                    }
+                },
+                {
+                    "buildingName": "zone3Landmark",
+                    "index": 1,
+                    "positionVector": {
+                        "x": 10.0,
+                        "y": 0.0,
+                        "z": -9.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:39:40",
+                    "buildingObject": {
+                        "instanceID": -232232
+                    }
+                }
+            ],
+            "mileage": 0,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [
+                0,
+                1
+            ],
+            "boughtBuilidng": [],
+            "lastPlayTime": "2020-07-05 PM 7:36:09"
+        }
+    ],
+    "id": "sanghun",
+    "coin": 47999295
+}

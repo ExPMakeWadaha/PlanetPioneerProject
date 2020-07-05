@@ -5,6 +5,7 @@ using System.Transactions;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour
 {
@@ -30,6 +31,10 @@ public class SceneLoader : MonoBehaviour
     public int gameTimer;       //초단위
 
     public GameObject whiteLoadingBar; // 로딩바로 쓸 큐브
+    public GameObject nameText;
+    public GameObject loadingObject;
+
+
     //증말 제일중요한거. 게임 시작을 하게되면 wholeGameData에서 lastPlayTime을 받아온다
     //이전에 접속한 시간을 얻어내면 그때부터 지금까지 시간을 알 수 있다
     //그런데 시간초를 게임매니저에서 세어주게 되면은 메뉴에서 서성이는 시간은 시간초로 안세어진느 것이다
@@ -104,11 +109,22 @@ public class SceneLoader : MonoBehaviour
         AsyncOperation operation = SceneManager.LoadSceneAsync("MenuScene");
         //비동기로 씬 로딩하는거. 일케 안하면 게임이 멈춰버린다
         operation.allowSceneActivation = true;
+        yield return new WaitForSeconds(3f);
+        if (operation.isDone)
+        {
+            yield break;
+        }
+        else
+        {
+            nameText.SetActive(false);
+            loadingObject.SetActive(true);
+        }
 
 
         RectTransform barRect = whiteLoadingBar.GetComponent<RectTransform>();
         float height = barRect.sizeDelta.y;
         float originWidth = barRect.sizeDelta.x;
+
 
 
         //WholeGameDataLoad();
@@ -123,14 +139,15 @@ public class SceneLoader : MonoBehaviour
         while (!operation.isDone)
         {
             time += Time.deltaTime;
+            Debug.Log(time);
             //whiteLoadingBar.transform.position = vector;
-            if (operation.progress < 0.8f && time <=5)
+            if (time <=5)
             {
                 barRect.sizeDelta = new Vector2(originWidth - time * originWidth *0.2f, height);
             }
             else
             {
-                barRect.sizeDelta = new Vector2(originWidth - operation.progress * originWidth, height);
+                time = 0;
             }
             //로딩바 채워지는걸 여기서 넣는다
             yield return null;
@@ -171,14 +188,14 @@ public class SceneLoader : MonoBehaviour
         }
 
         //게임을 켜고 지난 시간들을 입력하는건데 사용하는곳도 없고 의미도 없다.
-        pastSeconds = TimeSubtractionToSeconds(wholeGameData.lastPlayTime, gameStartTime);
+    //    pastSeconds = TimeSubtractionToSeconds(wholeGameData.lastPlayTime, gameStartTime);
 
 
     }
 
     private void OnApplicationQuit()
     {
-        wholeGameData.lastPlayTime = System.DateTime.Now.ToString();
+      //  wholeGameData.lastPlayTime = System.DateTime.Now.ToString();
 
         if (nowStage >= 0)
         {
@@ -204,7 +221,7 @@ public class SceneLoader : MonoBehaviour
             {
                 wholeGameData.coin = nowGameManager.coin;
                 wholeGameData.ChangeStageData(nowGameManager.GetStageData(), nowStage);
-                wholeGameData.lastPlayTime = pausedTime;
+                wholeGameData.stageArray[nowStage].lastPlayTime = pausedTime;
             }
             //게임데이터를 받아와서 저장해준다
             jsonManager.Save(wholeGameData);

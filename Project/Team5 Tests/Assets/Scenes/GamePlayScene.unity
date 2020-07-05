@@ -1355,8 +1355,11 @@ MonoBehaviour:
   sellUIPrefab: {fileID: 1144442801092567379, guid: 670b07a80b3b95743a9619f8a6ded533,
     type: 3}
   buyingUI: {fileID: 298352140}
-  progressUIPrefab: {fileID: 8744953523995699542, guid: 42fdb22bd68e789469a064e025c07238,
-    type: 3}
+  progressUIPrefab:
+  - {fileID: 7628146751160869081, guid: d8ae298d42141124c977188cc34e82e2, type: 3}
+  - {fileID: 2712003362438114270, guid: ff601b99467887a4f8220a87222bd785, type: 3}
+  - {fileID: 3010334696611875555, guid: 32684d22f9e2df14da919264c4e9bb98, type: 3}
+  progressUIWidth: 144.5
   isBuyingNow: 0
 --- !u!4 &257183903
 Transform:
@@ -2156,7 +2159,8 @@ MonoBehaviour:
   optionManager: {fileID: 0}
   sellUIPrefab: {fileID: 0}
   buyingUI: {fileID: 0}
-  progressUIPrefab: {fileID: 0}
+  progressUIPrefab: []
+  progressUIWidth: 0
   isBuyingNow: 0
 --- !u!114 &644459117
 MonoBehaviour:

@@ -48,7 +48,8 @@ public class GameManager : MonoBehaviour {
     //태그는 RayScript에서 RayCast당한 오브젝트의 태그가 "Building"일 때만 타겟으로 지정할 수 있게 만들었다.
     public GameObject sellUIPrefab;
     public GameObject buyingUI;
-    public GameObject progressUIPrefab;
+    public GameObject[] progressUIPrefab;
+    public float progressUIWidth;
 
     Button buyingXButton;
     Button buyingYButton;
@@ -61,6 +62,7 @@ public class GameManager : MonoBehaviour {
 
     //랜드마크 샀는지
     bool isLandmarkExist;
+    bool isPlanetExist;
 
     //OptionManager에서 부르는 함수이다.
     public void Optioning()
@@ -223,7 +225,7 @@ public class GameManager : MonoBehaviour {
         //빌딩오브젝트를 만들어주고, 콜라이더를 씌워서 클릭할 수 있게 만들어준다
         //콜라이더의 싸이즈는 빌딩에 맞게 가로 세로를 넣어주낟.
 
-        GameObject uiObject = Instantiate(progressUIPrefab, building.buildingObject.transform, false);
+        GameObject uiObject = Instantiate(progressUIPrefab[nowStage], building.buildingObject.transform, false);
         building.SetProgressUI(uiObject);
 
 
@@ -247,8 +249,33 @@ public class GameManager : MonoBehaviour {
         //빌딩오브젝트를 만들어주고, 콜라이더를 씌워서 클릭할 수 있게 만들어준다
         //콜라이더를 안만들어주면은 rayCast가 안먹어요
         //콜라이더의 싸이즈는 빌딩에 맞게 가로 세로를 넣어주낟.
-        GameObject uiObject = Instantiate(progressUIPrefab, building.buildingObject.transform, false);
+        GameObject uiObject = Instantiate(progressUIPrefab[nowStage], building.buildingObject.transform, false);
         building.SetProgressUI(uiObject);
+    }
+
+    public void BuildingPaused(Building building)
+    {
+
+        //지나간 시간이 얼마나 되는지 확인.
+        BuildingData buildingData = FindBuildingData(building.buildingName);   //처음에 자동으로 널값이 들어가질 않는다.
+        //짓고 난 다음 시간이 얼마나 걸렸는지. 이걸로 돈을 얼마나 줄지 판정해야한다
+
+        if (buildingData == null)
+        {
+
+            return;
+        }
+
+        if (building.isCompleted)
+        {
+            //만약 이전부터 완성되었던 건물이라면
+            string lastPlayTime = sceneLoader.wholeGameData.stageArray[nowStage].lastPlayTime;
+            int time = sceneLoader.TimeSubtractionToSeconds(lastPlayTime, System.DateTime.Now);
+            time = time / 10;
+            coin += time * buildingData.incomeCoin;
+            Debug.Log("coin is " + time * buildingData.incomeCoin);
+            Debug.Log("time span is " + time);
+        }
     }
 
     void BuildingLoad(Building building)
@@ -266,10 +293,15 @@ public class GameManager : MonoBehaviour {
         
         building.SetData(buildingData);
 
+        if (buildingData.buildingName.Contains("planet"))
+        {
+            isPlanetExist = true;
+        }
+
         if (building.isCompleted)
         {
             //만약 이전부터 완성되었던 건물이라면
-            string lastPlayTime = sceneLoader.wholeGameData.lastPlayTime;
+            string lastPlayTime = sceneLoader.wholeGameData.stageArray[nowStage].lastPlayTime;
             int time = sceneLoader.TimeSubtractionToSeconds(lastPlayTime, System.DateTime.Now);
             time = time / 10;
             coin += time * buildingData.incomeCoin;
@@ -330,11 +362,6 @@ public class GameManager : MonoBehaviour {
         collider.size = new Vector3(data.width, 1, data.height);
 
         //나머지는 건설중오브젝트 만드는거랑 똑같다
-        GameObject uiObject = Instantiate(sellUIPrefab, building.buildingObject.transform, false);
-        if (data.buildingName == "apartment" || data.buildingName.Contains("building") || data.buildingName.Contains("mobile"))
-        {
-            uiObject.transform.localPosition = new Vector3(0, 15, 0);
-        }
         if (data.buildingName.Contains("Landmark"))
         {
             isLandmarkExist = true;
@@ -344,6 +371,11 @@ public class GameManager : MonoBehaviour {
             if (!data.buildingName.Contains("planet"))
             {
 
+                GameObject uiObject = Instantiate(sellUIPrefab, building.buildingObject.transform, false);
+                if (data.buildingName == "apartment" || data.buildingName.Contains("building") || data.buildingName.Contains("mobile"))
+                {
+                    uiObject.transform.localPosition = new Vector3(0, 15, 0);
+                }
                 building.SetSellUI(uiObject);
                 SetSellButton(building);
 
@@ -373,11 +405,8 @@ public class GameManager : MonoBehaviour {
         BoxCollider collider = building.buildingObject.AddComponent<BoxCollider>();
         collider.size = new Vector3(data.width, 1, data.height);
 
-        GameObject uiObject = Instantiate(sellUIPrefab, building.buildingObject.transform, false);
-        if (data.buildingName == "apartment" || data.buildingName.Contains("building") || data.buildingName.Contains("mobile"))
-        {
-            uiObject.transform.localPosition = new Vector3(0, 15, 0);
-        }
+        
+        
         if (data.buildingName.Contains("Landmark"))
         {
             isLandmarkExist = true;
@@ -386,7 +415,11 @@ public class GameManager : MonoBehaviour {
         {
             if (!data.buildingName.Contains("planet"))
             {
-
+                GameObject uiObject = Instantiate(sellUIPrefab, building.buildingObject.transform, false);
+                if (data.buildingName == "apartment" || data.buildingName.Contains("building") || data.buildingName.Contains("mobile"))
+                {
+                    uiObject.transform.localPosition = new Vector3(0, 15, 0);
+                }
                 building.SetSellUI(uiObject);
                 SetSellButton(building);
 
@@ -447,11 +480,10 @@ public class GameManager : MonoBehaviour {
 
         if (landmarkData == null)
         {
-            Debug.Log("좃됐따 랜드마크가 없다");
+            return;
         }
         else
         {
-            Debug.Log("개잘댐ㅋㅋ");
             BuildStart(landmarkData,Vector3.zero);
             //이제 빌드를 때려준다.
         }
@@ -535,21 +567,40 @@ public class GameManager : MonoBehaviour {
     {
 
         BuildingData data = FindBuildingData(name);
-        if (isLandmarkExist == false && !name.Contains("Landmark")) 
+        bool containsLandmark = name.Contains("Landmark");
+        if (isLandmarkExist == false && !containsLandmark) 
+        {
+            return;
+
+        }
+        else if (isLandmarkExist == true && containsLandmark)
         {
             return;
         }
-        if (coin < data.cost)
+        if(isPlanetExist == true && name.Contains("planet"))
         {
-            Debug.Log("no Coin");
             return;
-            //못사면 그냥 리턴
+        }
+        if (name.Contains("Landmark"))
+        {
+            if (coin < data.cost)
+            {
+                Debug.Log("no Coin");
+                return;
+                //못사면 그냥 리턴
+            }
         }
         else
         {
-            //만약 살 수 있다면 완전한 오브젝트 만들기
-            MakeBuyingObject(data);
+            if (coin < data.cost * (nowStage + 1))
+            {
+                Debug.Log("no Coin");
+                return;
+                //못사면 그냥 리턴
+            }
         }
+        MakeBuyingObject(data);
+
         //boughtBuildingList.Add(name);
         //사면은 UI에 버튼이 달라지거나 하는 효과를 넣는다.
         //UI나오고 나서 해야함
@@ -778,10 +829,35 @@ public class GameManager : MonoBehaviour {
 
         Text dumyText = building.GetText();
         StringBuilder strBuilder = new StringBuilder();
-        int leftTime = building.GetData().buildTime - sceneLoader.TimeSubtractionToSeconds(building.buildStartTime, System.DateTime.Now);
+        float wholeTime = building.GetData().buildTime;
+        float leftTime = wholeTime - sceneLoader.TimeSubtractionToSeconds(building.buildStartTime, System.DateTime.Now);
+        float percentage = leftTime / wholeTime;
+        TimeSpan time = TimeSpan.FromSeconds(leftTime);
+        RectTransform rect = building.GetRect();
+        rect.sizeDelta = new Vector2(progressUIWidth*percentage, rect.sizeDelta.y);
+        string str;
+        if(time.Hours != 0)
+        {
+            //모든 시간 표시
+            str = time.ToString(@"hh\hmm\mss\s");
+        }
+        else if(time.Minutes != 0)
+        {
+            //minutes랑 seconds만 표시
+            str = time.ToString(@"mm\mss\s");
+        }
+        else
+        {
+            //seconds만 표시
+            str = time.ToString(@"ss\s");
+        }
 
-        strBuilder.Append(leftTime.ToString());
-        dumyText.text = strBuilder.ToString();
+        //here backslash is must to tell that colon is
+        //not the part of format, it just a character that we want in output
+        
+        dumyText.text = str;
+
+
 
     }
 

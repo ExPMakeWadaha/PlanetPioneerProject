@@ -50,7 +50,7 @@ public class cameraMove : MonoBehaviour
                 //여기는 무빙
                 nowPos = touch.position;  //움직인만큼 좌표 입력
                 rotatePos = new Vector3(touch.deltaPosition.y, -1*touch.deltaPosition.x, 0);
-                rotatePos *= 0.1f;
+                rotatePos *= 0.03f;
                 cam.transform.Rotate(rotatePos);
                 cam.transform.eulerAngles = new Vector3(cam.transform.eulerAngles.x, cam.transform.eulerAngles.y, 0);
                 //cam.transform.rotation = Quaternion.Euler(cam.transform.rotation.x, cam.transform.rotation.y, 0);

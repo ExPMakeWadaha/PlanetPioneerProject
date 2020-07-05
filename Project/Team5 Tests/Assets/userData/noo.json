@@ -1,0 +1,82 @@
+{
+    "stageArray": [
+        {
+            "stageIndex": 0,
+            "buildingList": [
+                {
+                    "buildingName": "zone1Landmark",
+                    "index": 0,
+                    "positionVector": {
+                        "x": -7.0,
+                        "y": 0.0,
+                        "z": -6.0
+                    },
+                    "isCompleted": true,
+                    "buildStartTime": "2020-07-05 PM 7:05:31",
+                    "buildingObject": {
+                        "instanceID": -56040
+                    }
+                }
+            ],
+            "mileage": 60000,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        },
+        {
+            "stageIndex": 1,
+            "buildingList": [],
+            "mileage": 0,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        },
+        {
+            "stageIndex": 2,
+            "buildingList": [],
+            "mileage": 0,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        }
+    ],
+    "lastPlayTime": "2020-07-05 PM 7:31:19",
+    "id": "sanghun",
+    "coin": 0
+}
