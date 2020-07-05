@@ -24,6 +24,7 @@ public class OptionManager : MonoBehaviour
     public Text incomeSumText;
     public Text coinTimerText;
 
+    List<BuildingData> buildingDataList;
 
 
 
@@ -93,6 +94,10 @@ public class OptionManager : MonoBehaviour
     public void BuildRandomBuilding()
     {
         gameManager.BuildRadomBuilding();
+    }
+    public void BuildApartment()
+    {
+        gameManager.BuildApartment();
     }
 
     public void ChangeText(int coin, int incomeSum, int mileage,int coinTimer)

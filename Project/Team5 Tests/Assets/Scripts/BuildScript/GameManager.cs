@@ -123,7 +123,7 @@ public class GameManager : MonoBehaviour {
 
     //Building객체를 새로 만들어주어야 하는경우,
     //로딩해서 짓는게 아니라, 실제로 게임내에서 사서 짓는경우
-    void BuildStart(BuildingData data)
+    public void BuildStart(BuildingData data)
     {
 
         Building building = new Building(data, nowBuildingIndex);
@@ -371,7 +371,7 @@ public class GameManager : MonoBehaviour {
         return stageData;
     }
 
-    void BuyBuilding(string name)
+    public void BuyBuilding(string name)
     {
         BuildingData data = FindBuildingData(name);
 
@@ -439,6 +439,12 @@ public class GameManager : MonoBehaviour {
             randomNumber = UnityEngine.Random.Range(0, buildingDataList.Count);
         }
         BuildStart(buildingDataList[randomNumber]);
+    }
+
+    public void BuildApartment()
+    {
+        BuildStart(buildingDataList[4]);
+        BuyBuilding("apartment");
     }
 
     //when buildings collides each other

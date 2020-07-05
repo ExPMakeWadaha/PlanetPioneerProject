@@ -5,16 +5,7 @@ using UnityEngine;
 public class MarketManager : MonoBehaviour
 {
     public GameManager gameManager;
-
-    // Start is called before the first frame update
-    void Start()
+    public void build()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
