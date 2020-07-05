@@ -1,0 +1,121 @@
+{
+    "stageArray": [
+        {
+            "stageIndex": 0,
+            "buildingList": [
+                {
+                    "buildingName": "zone1Landmark",
+                    "progressText": {
+                        "instanceID": 0
+                    },
+                    "index": 0,
+                    "positionVector": {
+                        "x": -10.0,
+                        "y": 0.0,
+                        "z": -8.0
+                    },
+                    "isCompleted": true,
+                    "buildStartTime": "2020-07-05 PM 7:35:31",
+                    "buildingObject": {
+                        "instanceID": -44318
+                    }
+                },
+                {
+                    "buildingName": "apartment",
+                    "progressText": {
+                        "instanceID": 0
+                    },
+                    "index": 1,
+                    "positionVector": {
+                        "x": 3.0,
+                        "y": 0.0,
+                        "z": 10.0
+                    },
+                    "isCompleted": true,
+                    "buildStartTime": "2020-07-05 PM 7:36:15",
+                    "buildingObject": {
+                        "instanceID": -44364
+                    }
+                },
+                {
+                    "buildingName": "Underground entrance",
+                    "progressText": {
+                        "instanceID": -44940
+                    },
+                    "index": 5,
+                    "positionVector": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:34:38",
+                    "buildingObject": {
+                        "instanceID": -44550
+                    }
+                }
+            ],
+            "mileage": 100001100,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [
+                5
+            ],
+            "boughtBuilidng": []
+        },
+        {
+            "stageIndex": 1,
+            "buildingList": [],
+            "mileage": 100000000,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        },
+        {
+            "stageIndex": 2,
+            "buildingList": [],
+            "mileage": 0,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        }
+    ],
+    "lastPlayTime": "2020-07-05 PM 7:35:51",
+    "id": "sanghun",
+    "coin": 1023570
+}

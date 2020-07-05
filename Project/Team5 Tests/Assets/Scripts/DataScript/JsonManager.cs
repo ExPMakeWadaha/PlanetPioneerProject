@@ -55,7 +55,7 @@ public class JsonManager
 #endif
 
 #if UNITY_ANDROID
-        //loadPath = Application.persistentDataPath;
+        loadPath = Application.persistentDataPath;
 
 
 #endif
@@ -174,6 +174,7 @@ public class JsonManager
             {
                 obj = Resources.Load<GameObject>("modeling/Cube");
                 building.prefab = obj;
+                Debug.Log(building.buildingName);
             }
             else
             {

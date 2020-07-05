@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Analytics;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
@@ -18,7 +20,7 @@ public class GameManager : MonoBehaviour {
 
     SceneLoader sceneLoader;    //여기서 정보를 다 땡겨오는거다.
     StageData stageData;    //현재 스테이지에서 가지고 있을 데이터. 
-    int nowStage;    //현재 스테이지. 0 1 2 이다
+    public int nowStage;    //현재 스테이지. 0 1 2 이다
     public int coin;        //현재 가지고 있는 돈
     public int mileage;        //마일리지
 
@@ -34,7 +36,7 @@ public class GameManager : MonoBehaviour {
                                     //포인터 개념을 사용하지 않기 때문에 C++에서의 동적배열 방법은 사용하지 않는다.
                                     //대신 이미 있는 라이브러리인 List를 써준다.List가 궁금하면 API를 찾아보길 바란다.
     [SerializeField]
-    List<BuildingData> buildingDataList;    //빌딩데이터 리스트 가져온다.
+    public List<BuildingData> buildingDataList;    //빌딩데이터 리스트 가져온다.
     bool isOptioning;   //환경설정창이 켜져있는지 판정하는 bool값
     List<int> incompletedIndexList; //미완성된 빌딩의 인덱스값들이다.
 
@@ -42,11 +44,23 @@ public class GameManager : MonoBehaviour {
     public OptionManager optionManager; //
 
     const string objectTag = "Building";  //빌딩에 넣을 태그. Unity기능이니 잘 찾아보시요.
+    const string buyingTag = "Buying";
     //태그는 RayScript에서 RayCast당한 오브젝트의 태그가 "Building"일 때만 타겟으로 지정할 수 있게 만들었다.
     public GameObject sellUIPrefab;
-    public GameObject buyingUIPrefab;
+    public GameObject buyingUI;
     public GameObject progressUIPrefab;
 
+    Button buyingXButton;
+    Button buyingYButton;
+    BuildingData buyingData;
+    public bool isBuyingNow;
+
+
+    //지금 사려고 켜놓은 오브젝트
+    GameObject nowBuyingObject;
+
+    //랜드마크 샀는지
+    bool isLandmarkExist;
 
     //OptionManager에서 부르는 함수이다.
     public void Optioning()
@@ -65,6 +79,7 @@ public class GameManager : MonoBehaviour {
         incompletedIndexList = stageData.incompletedIndex;
         coin = sceneLoader.wholeGameData.coin;
         mileage = stageData.mileage;
+        isBuyingNow = false;
         //이 위까지는 그냥 stageData에서 받아온거다. 굳이 변수를 하나 더 만들어준 이유는
         //쓰기 편하라고이다.
 
@@ -74,6 +89,10 @@ public class GameManager : MonoBehaviour {
             boughtBuildingList = new List<string>();
         }
         *///단순한 버그처리용. 디버깅중에 이게 nullReferenceException이 자주 떠서 그렇다.
+        nowBuyingObject = null;
+        buyingXButton = null;
+        buyingYButton = null;
+        buyingData = null;
 
         coinIncomeSum = 0;  //초기화. 빌딩 지어질 떄마다 더해줄거. 초깃값은 onStageLoaded에서 정한다.
         coinTimer = 0;
@@ -87,13 +106,14 @@ public class GameManager : MonoBehaviour {
 
 
 
-
+        isLandmarkExist = false;
         nowBuildingIndex = buildingList.Count;
         OnStageLoaded();
         //현재 개수 몇개인지 세어준다.
         StartCoroutine(BuildCoroutine());
         if (nowStage == 0 && buildingList.Count == 0)
         {
+            isLandmarkExist = true;
             BuildStage1LandMark();
             //랜드마크 지어주낟
         }
@@ -121,14 +141,74 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    //상점에서 사는걸 누른 다음에 띄우는거
+    void MakeBuyingObject(BuildingData data)
+    {
+        if (isBuyingNow)
+        {
+            return;
+        }
+        isBuyingNow = true;
+        nowBuyingObject = Instantiate(data.prefab, new Vector3(0, 0, 0), Quaternion.identity);
+        nowBuyingObject.tag = buyingTag;
+        BoxCollider collider = nowBuyingObject.AddComponent<BoxCollider>();
+        collider.size = new Vector3(data.width, 1, data.height);
+        //빌딩오브젝트를 만들어주고, 콜라이더를 씌워서 클릭할 수 있게 만들어준다
+        //콜라이더의 싸이즈는 빌딩에 맞게 가로 세로를 넣어주낟.
+        buyingUI.SetActive(true);
+        buyingUI.transform.SetParent(nowBuyingObject.transform, false);
+        buyingUI.transform.localPosition = new Vector3(0, 6, 0);
+        if (data.buildingName == "apartment" || data.buildingName.Contains("building") || data.buildingName.Contains("mobile"))
+        {
+            buyingUI.transform.localPosition = new Vector3(0, 15, 0);
+        }
+        buyingXButton = buyingUI.transform.GetChild(0).GetChild(0).GetComponent<Button>();
+        buyingYButton = buyingUI.transform.GetChild(0).GetChild(1).GetComponent<Button>();
+
+        buyingXButton.onClick.AddListener(() => BuyingX());
+        buyingYButton.onClick.AddListener(() => BuyingY());
+        buyingData = data;
+        CanBuyBuilding(IsBuildingColliding(Vector3.zero));
+    }
+
+    public void CanBuyBuilding(bool isColliding)
+    {
+        buyingXButton.gameObject.SetActive(isColliding);
+        buyingYButton.gameObject.SetActive(!isColliding);
+    }
+
+    public void BuyingY()
+    {
+        buyingUI.transform.SetParent(null);
+        buyingUI.SetActive(false);
+        Vector3 pos = nowBuyingObject.transform.position;
+        Destroy(nowBuyingObject);
+        Debug.Log("position is " + pos);
+        BuildStart(buyingData,pos);
+
+        isBuyingNow = false;
+        buyingXButton.onClick.RemoveAllListeners();
+        buyingYButton.onClick.RemoveAllListeners();
+    }
+
+    public void BuyingX()
+    {
+        buyingUI.transform.SetParent(null);
+        buyingUI.SetActive(false);
+        Destroy(nowBuyingObject);
+        isBuyingNow = false;
+        buyingXButton.onClick.RemoveAllListeners();
+        buyingYButton.onClick.RemoveAllListeners();
+    }
+
     //Building객체를 새로 만들어주어야 하는경우,
     //로딩해서 짓는게 아니라, 실제로 게임내에서 사서 짓는경우
-    public void BuildStart(BuildingData data)
+    public void BuildStart(BuildingData data,Vector3 pos)
     {
-
+        coin -= data.cost;
+        optionManager.ChangeText(coin, coinIncomeSum, mileage);
         Building building = new Building(data, nowBuildingIndex);
         buildingList.Add(building);
-        Debug.Log(building.buildingName);
 
         incompletedIndexList.Add(nowBuildingIndex);
         nowBuildingIndex++;
@@ -137,7 +217,7 @@ public class GameManager : MonoBehaviour {
         //빌딩이 0개면 인덱스도 0이다. 인덱스는 1부터시작이 아니라 0부터시작이니까 0넣어주고 1더해줘야해!!
         building.isCompleted = false;
 
-        building.buildingObject = Instantiate(data.incompletedPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        building.buildingObject = Instantiate(data.incompletedPrefab, pos, Quaternion.identity);
         building.buildingObject.tag = objectTag;
         BoxCollider collider = building.buildingObject.AddComponent<BoxCollider>();
         collider.size = new Vector3(data.width, 1, data.height);
@@ -229,8 +309,10 @@ public class GameManager : MonoBehaviour {
     void BuildComplete(int index)
     {
         //index는 buildingList에서 완료된 것의 index를 받는다
+        optionManager.ChangeText(coin, coinIncomeSum, mileage);
         Building building = buildingList[index];
         BuildingData data = building.GetData();
+        Vector3 pos = building.buildingObject.transform.position;
         //data를 받는 이유는 가로 세로 길이도 알아야해서이다.
         building.isCompleted = true; //완성됐다고 해주고
         Destroy(building.buildingObject);
@@ -239,13 +321,32 @@ public class GameManager : MonoBehaviour {
         coinIncomeSum += data.incomeCoin;
 
         building.buildingObject = Instantiate(data.prefab, building.positionVector, Quaternion.identity);
+        building.buildingObject.transform.position = pos;
         building.buildingObject.tag = objectTag;
         BoxCollider collider = building.buildingObject.AddComponent<BoxCollider>();
         collider.size = new Vector3(data.width, 1, data.height);
 
         //나머지는 건설중오브젝트 만드는거랑 똑같다
         GameObject uiObject = Instantiate(sellUIPrefab, building.buildingObject.transform, false);
-        building.SetSellUI(uiObject);
+        if (data.buildingName == "apartment" || data.buildingName.Contains("building") || data.buildingName.Contains("mobile"))
+        {
+            uiObject.transform.localPosition = new Vector3(0, 15, 0);
+        }
+        if (data.buildingName.Contains("Landmark"))
+        {
+            isLandmarkExist = true;
+        }
+        else
+        {
+            if (!data.buildingName.Contains("planet"))
+            {
+
+                building.SetSellUI(uiObject);
+                SetSellButton(building);
+
+            }
+        }
+
 
         mileage += data.mileage * (nowStage + 1);
         //마일리지 한다.
@@ -270,10 +371,65 @@ public class GameManager : MonoBehaviour {
         collider.size = new Vector3(data.width, 1, data.height);
 
         GameObject uiObject = Instantiate(sellUIPrefab, building.buildingObject.transform, false);
-        building.SetSellUI(uiObject);
+        if (data.buildingName == "apartment" || data.buildingName.Contains("building") || data.buildingName.Contains("mobile"))
+        {
+            uiObject.transform.localPosition = new Vector3(0, 15, 0);
+        }
+        if (data.buildingName.Contains("Landmark"))
+        {
+            isLandmarkExist = true;
+        }
+        else
+        {
+            if (!data.buildingName.Contains("planet"))
+            {
+
+                building.SetSellUI(uiObject);
+                SetSellButton(building);
+
+            }
+        }
 
         //나머지는 건설중오브젝트 만드는거랑 똑같다
         Debug.Log("건설 끝났어");
+
+    }
+
+    public void SetSellButton(Building building)
+    {
+        Button button = building.GetSellButton();
+        if(building.index == 0)
+        {
+            //landmark
+            button.gameObject.SetActive(false);
+        }
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => SellBuilding(building.index));
+    }
+
+    public void SellBuilding(int index)
+    {
+        optionManager.ChangeText(coin, coinIncomeSum, mileage);
+        nowBuildingIndex--;
+        Building building = buildingList[index];
+        foreach(Building obj in buildingList)
+        {
+            if(obj.index > index)
+            {
+                obj.index--;
+                SetSellButton(building);
+            }
+        }
+        for (int i = 0; i < incompletedIndexList.Count; i++){
+            if (incompletedIndexList[i] > index)
+            {
+                incompletedIndexList[i]--;
+            }
+        }
+        coin += building.GetData().sellCost;
+
+        Destroy(building.buildingObject);
+        buildingList.Remove(building);
 
     }
 
@@ -292,7 +448,7 @@ public class GameManager : MonoBehaviour {
         else
         {
             Debug.Log("개잘댐ㅋㅋ");
-            BuildStart(landmarkData);
+            BuildStart(landmarkData,Vector3.zero);
             //이제 빌드를 때려준다.
         }
         //Building landmark = new Building()
@@ -349,7 +505,7 @@ public class GameManager : MonoBehaviour {
     void CoinIncome()
     {
         coinTimer++;
-        optionManager.ChangeText(coin, coinIncomeSum, mileage, coinTimer);
+        optionManager.ChangeText(coin, coinIncomeSum, mileage);
         if (coinTimer >= 10)
         {
             coinTimer = 0;
@@ -371,19 +527,26 @@ public class GameManager : MonoBehaviour {
         return stageData;
     }
 
-    public void BuyBuilding(string name)
+    public void BuyBuildingButton(string name)
     {
+
         BuildingData data = FindBuildingData(name);
-        Debug.Log(data.buildingName);
+        if (isLandmarkExist == false && !name.Contains("Landmark")) 
+        {
+            return;
+        }
         if (coin < data.cost)
         {
+            Debug.Log("no Coin");
             return;
             //못사면 그냥 리턴
         }
-        
-        coin -= data.cost;
+        else
+        {
+            //만약 살 수 있다면 완전한 오브젝트 만들기
+            MakeBuyingObject(data);
+        }
         //boughtBuildingList.Add(name);
-
         //사면은 UI에 버튼이 달라지거나 하는 효과를 넣는다.
         //UI나오고 나서 해야함
 
@@ -438,13 +601,78 @@ public class GameManager : MonoBehaviour {
         {
             randomNumber = UnityEngine.Random.Range(0, buildingDataList.Count);
         }
-        BuildStart(buildingDataList[randomNumber]);
+        BuildStart(buildingDataList[randomNumber],Vector3.zero);
     }
 
-    public void BuildApartment()
+    public bool IsBuildingColliding(Vector3 rawPos)
     {
-        BuildStart(buildingDataList[4]);
-        BuyBuilding("apartment");
+        BuildingData data = buyingData;
+        int xBound = data.width / 2;
+        int zBound = data.height / 2;
+        if (rawPos.x > 0)
+        {
+            if (Mathf.RoundToInt(RayScript.positiveBound - rawPos.x) < xBound)
+            {
+                
+                return true;
+                //colliding
+            }
+            //just think about positive bound.
+        }
+        else
+        {
+            if (Mathf.RoundToInt(rawPos.x - RayScript.negativeBound) < xBound)
+            {
+                 return true;
+                //colliding
+            }
+        }
+        if (rawPos.z > 0)
+        {
+            if (Mathf.RoundToInt(RayScript.positiveBound - rawPos.z) < zBound)
+            {
+                
+                return true;
+                //colliding
+            }
+            //just think about positive bound.
+        }
+        else
+        {
+            if (Mathf.RoundToInt(rawPos.z - RayScript.negativeBound) < zBound)
+            {
+             
+                return true;
+                //colliding
+            }
+        }
+
+
+        //we checked every bounds, now we should check other buildings
+        foreach (Building other in buildingList)
+        {
+            bool xBool = false;
+            Vector3 otherPos = other.positionVector;
+            int otherXBound = other.GetData().width / 2;
+            int otherZBound = other.GetData().height / 2;
+            //check other ones vector
+            int xDistnace = Mathf.Abs(Mathf.RoundToInt(otherPos.x - rawPos.x));
+            if (xDistnace < xBound + otherXBound)
+            {
+                xBool = true;
+            }
+            int zDistnace = Mathf.Abs(Mathf.RoundToInt(otherPos.z - rawPos.z));
+            if (zDistnace < zBound + otherZBound)
+            {
+                if (xBool)
+                {
+                    return true;
+                }
+            }
+        }
+
+        
+        return false;
     }
 
     //when buildings collides each other
@@ -467,7 +695,6 @@ public class GameManager : MonoBehaviour {
         {
             if (Mathf.RoundToInt(RayScript.positiveBound - rawPos.x) < xBound)
             {
-                Debug.Log("xPositive Bound");
                 return true;
                 //colliding
             }
@@ -477,8 +704,6 @@ public class GameManager : MonoBehaviour {
         {
             if (Mathf.RoundToInt(rawPos.x - RayScript.negativeBound) < xBound)
             {
-                Debug.Log("xNegative Bound");
-                Debug.Log(Mathf.RoundToInt(rawPos.x - RayScript.negativeBound) + " and bound is " + xBound);
                 return true;
                 //colliding
             }
@@ -487,7 +712,6 @@ public class GameManager : MonoBehaviour {
         {
             if (Mathf.RoundToInt(RayScript.positiveBound - rawPos.z) < zBound)
             {
-                Debug.Log("zPositive Bound");
                 return true;
                 //colliding
             }
@@ -497,7 +721,6 @@ public class GameManager : MonoBehaviour {
         {
             if (Mathf.RoundToInt(rawPos.z - RayScript.negativeBound) < zBound)
             {
-                Debug.Log("zNegative Bound");
                 return true;
                 //colliding
             }
@@ -517,17 +740,11 @@ public class GameManager : MonoBehaviour {
                 int xDistnace = Mathf.Abs(Mathf.RoundToInt(otherPos.x - rawPos.x));
                 if (xDistnace < xBound +otherXBound)
                 {
-                    Debug.Log("Building XBound with " + other.buildingName
-                        + " distance in " + xDistnace);
-                    Debug.Log("Bound is " + xBound + otherXBound);
                     xBool = true;
                 }
                 int zDistnace = Mathf.Abs(Mathf.RoundToInt(otherPos.z - rawPos.z));
                 if (zDistnace < zBound + otherZBound)
                 {
-                    Debug.Log("Building zBound with " + other.buildingName
-                     + " distance in " + zDistnace);
-                    Debug.Log("Bound is " + zBound + otherZBound);
                     if (xBool)
                     {
                         return true;
@@ -538,7 +755,7 @@ public class GameManager : MonoBehaviour {
 
         }
 
-        Debug.Log("its not colliding");
+        
         return false;
 
     }
@@ -563,6 +780,8 @@ public class GameManager : MonoBehaviour {
         strBuilder.Append(leftTime.ToString());
         dumyText.text = strBuilder.ToString();
     }
+
+
 
 
 }

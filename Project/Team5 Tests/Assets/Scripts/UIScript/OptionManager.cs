@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class OptionManager : MonoBehaviour
@@ -24,7 +26,24 @@ public class OptionManager : MonoBehaviour
     public Text incomeSumText;
     public Text coinTimerText;
 
-    List<BuildingData> buildingDataList;
+    int stage;
+    int[] wholeMileage;
+    int nowStar;
+
+    //스테이지마다 UI가 바뀔건데 그 오브젝트
+    //0이 1스테이지, 1이 2스테이지, 2가 3스테이지다
+    public GameObject[] uiParentPrefab;
+    public GameObject[] buildingButtonPrefab;
+    GameObject starParent;
+
+    //instantiate 할 때 캔버스의 자식으로 inst해야돠ㅣ서 그렇다
+    public GameObject canvas;
+
+    bool isStoreOpened;
+    public GameObject storeScrollObject;
+
+
+    public List<BuildingData> buildingDataList;
 
 
 
@@ -95,25 +114,137 @@ public class OptionManager : MonoBehaviour
     {
         gameManager.BuildRadomBuilding();
     }
-    public void BuildApartment()
-    {
-        gameManager.BuildApartment();
-    }
 
-    public void ChangeText(int coin, int incomeSum, int mileage,int coinTimer)
+
+
+    //게임매니저에서 매 초마다 부르는 함수
+    public void ChangeText(int coin, int incomeSum, int mileage)
     {
+        if (wholeMileage == null)
+        {
+            return;
+        }
         coinText.text = coin.ToString();
         incomeSumText.text = incomeSum.ToString();
-        mileageText.text = mileage.ToString();
-        coinTimerText.text = coinTimer.ToString();
+        int mileagePercent = 10 * mileage / wholeMileage[stage];
+        Debug.Log(mileagePercent + "mile per");
+        mileageText.text = mileagePercent.ToString();
+        if (nowStar >= 10)
+        {
+            return;
+        }
+        if (nowStar < mileagePercent)
+        {
+            nowStar = mileagePercent;
+            for (int i =0;i<nowStar; i++)
+            {
+                starParent.transform.GetChild(i).gameObject.SetActive(true);
+            }
+            
+        }
+    }
+
+
+   
+
+    //
+    public void StoreButtonClick()
+    {
+
+        if (isStoreOpened)
+        {
+            storeScrollObject.SetActive(false);
+        }
+        else
+        {
+            storeScrollObject.SetActive(true);
+        }
+        isStoreOpened = !isStoreOpened;
     }
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        isStoreOpened = false;
+        stage = gameManager.nowStage;
+        if(stage >= 3)
+        {
+            return;
+        }
+        uiParentPrefab[stage].SetActive(true);
+
+        //getChild가 오브젝트 아래에서 찾아내는거다
+        storeScrollObject = uiParentPrefab[stage].transform.GetChild(0).gameObject;
+
+        Transform contentObject = storeScrollObject.transform.GetChild(0).GetChild(0).GetChild(0);
+        buildingDataList = gameManager.buildingDataList;
+
+        RectTransform contentRect = contentObject.GetComponent<RectTransform>();
+        float height = 250 * (buildingDataList.Count + 1);
+        contentRect.sizeDelta = new Vector2(0, height);
+
+        //코인텍스트가 7번 차일드더라..
+        coinText = uiParentPrefab[stage].transform.GetChild(7).GetComponent<Text>();
+        starParent = uiParentPrefab[stage].transform.GetChild(8).gameObject;
+        mileageText = uiParentPrefab[stage].transform.GetChild(11).GetComponent<Text>();
+        wholeMileage = new int[3];
+        wholeMileage[0] = 50000;
+        wholeMileage[1] = 100000;
+        wholeMileage[2] = 1000000;
+        nowStar = 0;
+
+        Vector3 scale = new Vector3(10, 10, 10);
+        Vector3 pos = new Vector3(0, -60, 0);
+        int buttonCount = 0;
+        for (int i = stage; i < buildingDataList.Count; i++)
+        {
+            
+            if (i == 0)
+            {
+                i += 3;
+            }
+            
+            GameObject buttonObject = Instantiate(buildingButtonPrefab[stage], contentObject,false);
+            RectTransform rect = buttonObject.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector3(0, height/2 -250 * (buttonCount+1), 0);
+            Button button = buttonObject.GetComponentInChildren<Button>();
+            string name = buildingDataList[i].buildingName;
+            button.onClick.AddListener(()=>BuyBuilding(name));
+            Text costText = buttonObject.GetComponentInChildren<Text>();
+            int cost = buildingDataList[i].cost * (stage + 1);
+            costText.text = cost.ToString();
+
+            GameObject buildingObject = Instantiate(buildingDataList[i].prefab, buttonObject.transform, false);
+
+
+            buildingObject.transform.localPosition = pos;
+            buildingObject.transform.localScale = scale;
+            if(i>5 && i < 10)
+            {
+                buildingObject.transform.localScale = scale * 5;
+            }
+            buttonCount++;
+
+            if (i < 3)
+            {
+                i += 3;
+            }
+            else if (i < 6)
+            {
+                i += 3;
+            }
+
+
+        }
     }
 
+    
+
+    public void BuyBuilding(string name)
+    {
+        gameManager.BuyBuildingButton(name);
+    }
+    
     // Update is called once per frame
     void Update()
     {

@@ -7,7 +7,7 @@ public class MarketManager : MonoBehaviour
     public GameManager gameManager;
     List<BuildingData> buildingDataList;
 
-
+    /*
     public void BuildtunnelEntrance()
     {
         gameManager.BuildStart(buildingDataList[0]);
@@ -163,5 +163,5 @@ public class MarketManager : MonoBehaviour
         gameManager.BuildStart(buildingDataList[30]);
         gameManager.BuyBuilding("planet3");
     }
-
+    */
 }

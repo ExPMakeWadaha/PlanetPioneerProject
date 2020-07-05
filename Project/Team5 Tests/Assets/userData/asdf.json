@@ -1,0 +1,104 @@
+{
+    "stageArray": [
+        {
+            "stageIndex": 0,
+            "buildingList": [
+                {
+                    "buildingName": "zone1Landmark",
+                    "progressText": {
+                        "instanceID": 0
+                    },
+                    "index": 0,
+                    "positionVector": {
+                        "x": -5.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "isCompleted": true,
+                    "buildStartTime": "2020-07-05 PM 7:36:09",
+                    "buildingObject": {
+                        "instanceID": -3856
+                    }
+                },
+                {
+                    "buildingName": "baggage",
+                    "progressText": {
+                        "instanceID": -4292
+                    },
+                    "index": 3,
+                    "positionVector": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "isCompleted": false,
+                    "buildStartTime": "2020-07-05 PM 7:39:04",
+                    "buildingObject": {
+                        "instanceID": -3902
+                    }
+                }
+            ],
+            "mileage": 10300,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [
+                3
+            ],
+            "boughtBuilidng": []
+        },
+        {
+            "stageIndex": 1,
+            "buildingList": [],
+            "mileage": 0,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        },
+        {
+            "stageIndex": 2,
+            "buildingList": [],
+            "mileage": 0,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        }
+    ],
+    "lastPlayTime": "2020-07-05 PM 7:02:18",
+    "id": "sanghun",
+    "coin": 998975
+}

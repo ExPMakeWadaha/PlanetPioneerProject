@@ -13,9 +13,7 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
     BuildingData buildingData;      //그냥 빌딩 자체가 데이터를 가져버리면 되잖아.
                                     //stagedata에서도 이대로 저장되면 json이 너무 길어지니 안된다.
     GameObject buildingUI;
-    public Button xButton;
-    public Button vButton;
-    public Button sellButton;
+    Button sellButton;
     public Text progressText;
                                     //private으로 해놓으면 제이슨에서 저장을 안한다. 그래서 json파일이 짧아져서 좋다.
     public int index;               //건물이 그 스테이지에서 몇 번째로 생긴 건물인지
@@ -50,6 +48,8 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
         //그냥 생성자다. 찬찬히 읽어보세요
         //데이터를 집어넣어준다는것만 중요합니다.
     }
+
+
     public void SetProgressUI(GameObject obj)
     {
 
@@ -57,21 +57,15 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
         progressText = obj.GetComponentInChildren<Text>();
     }
 
-    public void SetBuyingUI(GameObject obj)
-    {
-
-        
-        buildingUI = obj;
-            xButton = buildingUI.GetComponentsInChildren<Button>()[0];
-            vButton = buildingUI.GetComponentsInChildren<Button>()[1];
-            //find api. my english is bad
-        
-    }
-
     public void SetSellUI(GameObject obj)
     {
         buildingUI = obj;
         sellButton = buildingUI.GetComponentInChildren<Button>();
+        
+    }
+    public Button GetSellButton()
+    {
+        return sellButton;
     }
 
 

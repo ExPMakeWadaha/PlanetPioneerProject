@@ -13,9 +13,13 @@ public class RayScript : MonoBehaviour
     public GameManager gameManager; //게임매니저에 정보를 넘겨줘야한다.
     Camera camera;
     const string objectTag = "Building";  //게임오브젝트의 태그다. 고정이니까 const
+    const string buyingTag = "Buying";
     public cameraMove cameraMover;
     Building targetBuilding;
-    //building object that now player is clicking
+
+    bool isBuyingNow;
+
+    
 
     //200620 new script by sanghub
     /// <summary>
@@ -33,17 +37,31 @@ public class RayScript : MonoBehaviour
 
     void Start()
     {
-        
         camera = Camera.main; // 메인카메라를 호출합니다. Start에 넣어야 작동하더라구요
         originalPosition = Vector3.zero;
+        isBuyingNow = false;
     }
 
    
     void Update()
     {
-        if(Input.GetMouseButtonDown(0)){
+        if (gameManager.isBuyingNow)
+        {
+            BuyingMove();
+        }
+        else
+        {
+            BuildingMove();
+        }
+    }
+
+    void BuildingMove()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
             ray = camera.ScreenPointToRay(Input.mousePosition); //마우스 좌클릭으로 마우스의 위치에서 Ray를 쏘아 오브젝트를 감지
-            if(Physics.Raycast(ray, out hit, Mathf.Infinity)){
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
                 target = hit.collider.gameObject; //Ray에 맞은 콜라이더를 타겟으로 설정
                 if (!target.CompareTag(objectTag))
                 {
@@ -54,17 +72,28 @@ public class RayScript : MonoBehaviour
                 else
                 {
                     cameraMover.BuildingTouched(true);
-                    targetBuilding = gameManager.FindBuilding(target);
-                    originalPosition = target.transform.position;
+                    if (targetBuilding == null)
+                    {
+                        targetBuilding = gameManager.FindBuilding(target);
+                        originalPosition = target.transform.position;
+                    }
+                    else
+                    {
+
+                        targetBuilding = gameManager.FindBuilding(target);
+                        originalPosition = target.transform.position;
+                    }
+
+
                     //you save targetbuilding on buttonDown
                     //so you can give Building to GameManager on button an buttonUp
 
                 }
             }
         }
-         if (Input.GetMouseButton(0))
-         {
-            if(target == null)
+        if (Input.GetMouseButton(0))
+        {
+            if (target == null)
             {
                 return;
             }
@@ -75,13 +104,13 @@ public class RayScript : MonoBehaviour
             if (!gameManager.IsBuildingColliding(targetBuilding, pos))
             {
                 target.transform.position = pos;
-                
+
             }
 
-                //좌클릭을 누르는 동안 마우스 좌표를 받아와 월드좌표로 변환 후, 타겟을 마우스의 위치로 옮깁니다.
+            //좌클릭을 누르는 동안 마우스 좌표를 받아와 월드좌표로 변환 후, 타겟을 마우스의 위치로 옮깁니다.
             //gameManager.ChangeBuildingPosition(target);
-            
-         }
+
+        }
 
         if (Input.GetMouseButtonUp(0))
         {
@@ -92,7 +121,7 @@ public class RayScript : MonoBehaviour
             }
 
             Vector3 positionVector = target.transform.position;
-            
+
             if (gameManager.IsBuildingColliding(targetBuilding, positionVector))
             {
                 //onColliding
@@ -107,7 +136,80 @@ public class RayScript : MonoBehaviour
             gameManager.ChangeBuildingPosition(target);
             target = null;
             //이제 타겟을 널로 만들어줍니다.
-            
+
+        }
+    }
+
+
+    //상점거 옮기려구
+    void BuyingMove()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            ray = camera.ScreenPointToRay(Input.mousePosition); //마우스 좌클릭으로 마우스의 위치에서 Ray를 쏘아 오브젝트를 감지
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                target = hit.collider.gameObject; //Ray에 맞은 콜라이더를 타겟으로 설정
+                if (!target.CompareTag(buyingTag))
+                {
+                    target = null;
+                    cameraMover.BuildingTouched(false);
+                    return;
+                }
+                else
+                {
+                    cameraMover.BuildingTouched(true);
+                    originalPosition = target.transform.position;
+                    
+
+
+                    //you save targetbuilding on buttonDown
+                    //so you can give Building to GameManager on button an buttonUp
+
+                }
+            }
+        }
+        if (Input.GetMouseButton(0))
+        {
+            if (target == null)
+            {
+                return;
+            }
+            Vector3 pos = ScreenToWorld();
+            //we have to process this with gameManager
+            //because gameManager has BuildingList, so you can know collidings
+            //target.transform.position = gameManager.OnBuildingCollision(targetBuilding, pos);
+            bool colliding = gameManager.IsBuildingColliding(pos);
+            if (!colliding)
+            {
+                target.transform.position = pos;
+            }
+            gameManager.CanBuyBuilding(colliding);
+
+            //좌클릭을 누르는 동안 마우스 좌표를 받아와 월드좌표로 변환 후, 타겟을 마우스의 위치로 옮깁니다.
+            //gameManager.ChangeBuildingPosition(target);
+
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            cameraMover.BuildingTouched(false);
+            if (target == null)
+            {
+                return;
+            }
+
+            Vector3 positionVector = target.transform.position;
+            bool colliding = gameManager.IsBuildingColliding(positionVector);
+            if (colliding)
+            {
+                //onColliding
+                target.transform.position = originalPosition;
+            }
+            gameManager.CanBuyBuilding(colliding);
+            target = null;
+            //이제 타겟을 널로 만들어줍니다.
+
         }
     }
 

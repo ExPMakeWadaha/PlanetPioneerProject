@@ -17,6 +17,7 @@ public class BuildingData
     public int width;               //garo             
     public int height;              //sero
     public int mileage;         //mileage
+    public int sellCost;        //dd
     public GameObject prefab;       //prefab object
     public GameObject incompletedPrefab;    //건설중일때의 오브젝트
 }

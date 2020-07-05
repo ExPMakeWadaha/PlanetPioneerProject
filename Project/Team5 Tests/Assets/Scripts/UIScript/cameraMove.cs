@@ -113,6 +113,45 @@ public class cameraMove : MonoBehaviour
                 nowPos = touch.position;  //움직인만큼 좌표 입력
                 movePos = (Vector3)(prePos - nowPos) * cameraSpeed; //움직인만큼 벡터로 변환
                 cam.transform.Translate(movePos);   //움직여줌
+                Vector3 limit = cam.transform.position;
+                if(Mathf.Abs(cam.transform.position.x) > 40)
+                {
+                    if(limit.x > 0)
+                    {
+                        limit.x = 40;
+                    }
+                    else
+                    {
+                        limit.x = -40;
+                    }
+
+                }
+                if (Mathf.Abs(cam.transform.position.y) > 40)
+                {
+                    if (limit.y > 0)
+                    {
+                        limit.y = 40;
+                    }
+                    else
+                    {
+                        limit.y = -40;
+                    }
+                }
+                if (Mathf.Abs(cam.transform.position.z) > 40)
+                {
+                    if (limit.z > 0)
+                    {
+                        limit.z = 40;
+                    }
+                    else
+                    {
+                        limit.z = -40;
+                    }
+                }
+
+                cam.transform.position = limit;
+
+
                 preZoomPos = nowZoomPos;
                 prePos = touch.position;  // 다시 계산하기 위해 이전좌표 재설정
 
