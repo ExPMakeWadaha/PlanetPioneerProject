@@ -9,6 +9,7 @@ public class cameraMove : MonoBehaviour
     // Start is called before the first frame update
     public RayScript rayScript;
     bool isBuildingTouched;
+    public bool isBuying;
 
     Vector2 nowPos, prePos;  //now는 현재, pre는 기록된
     Vector2 nowZoomPos, preZoomPos;
@@ -20,6 +21,7 @@ public class cameraMove : MonoBehaviour
     {
         cam = Camera.main;
         isBuildingTouched = false;
+        isBuying = true;
         nowZoomMag = 0;
         preZoomMag = 0;
         deltaZoomMag = 0;
@@ -32,7 +34,7 @@ public class cameraMove : MonoBehaviour
         if (Input.touchCount == 1) // 터치가 되었다면,
         {
 
-            if (isBuildingTouched)
+            if (isBuildingTouched || isBuying)
             {
                 //빌딩옮기는 중이면 예외처리
                 return;
@@ -60,12 +62,11 @@ public class cameraMove : MonoBehaviour
 
         if (Input.touchCount == 2)
         {
-            if (isBuildingTouched)
+            if (isBuildingTouched || isBuying)
             {
                 //빌딩옮기는 중이면 예외처리
                 return;
             }
-
             Touch touch = Input.GetTouch(0);
             Touch touch2 = Input.GetTouch(1);
             
@@ -87,7 +88,7 @@ public class cameraMove : MonoBehaviour
                 nowZoomPos = touch.position - touch2.position;
                 nowZoomMag = nowZoomPos.magnitude;
                 deltaZoomMag = preZoomMag - nowZoomMag;
-                deltaZoomMag *= 0.5f;
+                deltaZoomMag *= 0.1f;
                 if (Mathf.Abs(deltaZoomMag) > 4.0f)
                 {
                     Debug.Log("줌땡기고있어 " + deltaZoomMag);
@@ -155,9 +156,9 @@ public class cameraMove : MonoBehaviour
                 preZoomPos = nowZoomPos;
                 prePos = touch.position;  // 다시 계산하기 위해 이전좌표 재설정
 
-
-
-
+            }else if (touch.phase == TouchPhase.Ended)
+            {
+                cam.fieldOfView = 60;
             }
         }
     }
@@ -165,5 +166,10 @@ public class cameraMove : MonoBehaviour
     public void BuildingTouched(bool touched)
     {
         isBuildingTouched = touched;
+    }
+
+    public void Buying(bool buy)
+    {
+        isBuying = buy;
     }
 }

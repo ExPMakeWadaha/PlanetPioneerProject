@@ -29,7 +29,7 @@ public class SceneLoader : MonoBehaviour
     //게임시작시간을 알기위해 넣는다. 전나중요함
     public int gameTimer;       //초단위
 
-    public GameObject dumyLoadingBar; // 로딩바로 쓸 큐브
+    public GameObject whiteLoadingBar; // 로딩바로 쓸 큐브
     //증말 제일중요한거. 게임 시작을 하게되면 wholeGameData에서 lastPlayTime을 받아온다
     //이전에 접속한 시간을 얻어내면 그때부터 지금까지 시간을 알 수 있다
     //그런데 시간초를 게임매니저에서 세어주게 되면은 메뉴에서 서성이는 시간은 시간초로 안세어진느 것이다
@@ -93,8 +93,6 @@ public class SceneLoader : MonoBehaviour
         //스테이지가 몇스테이지인지 나타내주는건데, 0,1,2는 1 2 3 구역이고, -1은 그 외이다. 플레이안할때인겨.
         
         
-
-        
     }
 
     //메뉴신을 불러오는 코루틴. 여기서 앵간한 로딩은 다 해줘야한다.
@@ -106,19 +104,34 @@ public class SceneLoader : MonoBehaviour
         AsyncOperation operation = SceneManager.LoadSceneAsync("MenuScene");
         //비동기로 씬 로딩하는거. 일케 안하면 게임이 멈춰버린다
         operation.allowSceneActivation = true;
-        
-        WholeGameDataLoad();
+
+
+        RectTransform barRect = whiteLoadingBar.GetComponent<RectTransform>();
+        float height = barRect.sizeDelta.y;
+        float originWidth = barRect.sizeDelta.x;
+
+
+        //WholeGameDataLoad();
 
         //게임데이터 로드, 이 클래스 안의 함수다
         //여기다가 넣는 이유는, 로딩바가 중간에 멈추더라도 사람들은 로딩중이라고
         //생각하고 게임이 멈췄다고 생각은 안한다
 
         //이거는 로딩바인데.. 로딩바다..
-        Vector3 vector = new Vector3(0, (operation.progress - 0.5f) * 5, 0);
+
+        float time = 0;
         while (!operation.isDone)
         {
-            vector.y = (operation.progress - 0.5f) * 10;
-            dumyLoadingBar.transform.position = vector;
+            time += Time.deltaTime;
+            //whiteLoadingBar.transform.position = vector;
+            if (operation.progress < 0.8f && time <=5)
+            {
+                barRect.sizeDelta = new Vector2(originWidth - time * originWidth *0.2f, height);
+            }
+            else
+            {
+                barRect.sizeDelta = new Vector2(originWidth - operation.progress * originWidth, height);
+            }
             //로딩바 채워지는걸 여기서 넣는다
             yield return null;
             
@@ -142,7 +155,7 @@ public class SceneLoader : MonoBehaviour
         
     }
 
-    void WholeGameDataLoad()
+    public void WholeGameDataLoad()
     {
 
         //빌딩의 데이터, 세이브데이터를 불러온다.
@@ -234,6 +247,25 @@ public class SceneLoader : MonoBehaviour
     {
         DateTime past = DateTime.Parse(pastTime);
         DateTime latest = latestTime;
+        //string to datetime
+        if (past == null || latest == null)
+        {
+            Debug.Log("time is null");
+            Application.Quit();
+            return 0;
+        }
+
+        TimeSpan span = latest - past;
+        int seconds = (int)span.TotalSeconds;
+        //Debug.Log("subtraction is " + seconds);
+
+        return seconds;
+    }
+
+    public int TimeSubtractionToSeconds(DateTime pastTime, string latestTime)
+    {
+        DateTime past = pastTime;
+        DateTime latest = DateTime.Parse(latestTime);
         //string to datetime
         if (past == null || latest == null)
         {

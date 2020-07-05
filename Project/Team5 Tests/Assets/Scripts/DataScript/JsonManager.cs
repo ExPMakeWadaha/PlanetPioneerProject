@@ -34,7 +34,7 @@ public class JsonManager
         string jsonText = JsonUtility.ToJson(data,true);
         //이러면은 일단 데이터가 텍스트로 변환이 된다
         //jsonUtility를 이용하여 data인 WholeGameData를 json형식의 text로 바꾸어준다
-        Debug.Log(jsonText);
+        
         //파일스트림을 이렇게 지정해주고 저장해주면된당 끗
         FileStream fileStream = new FileStream(builder.ToString() , FileMode.Create);
         byte[] bytes = Encoding.UTF8.GetBytes(jsonText);
@@ -82,7 +82,7 @@ public class JsonManager
             stream.Read(bytes, 0, bytes.Length);
             stream.Close();
             string jsonData = Encoding.UTF8.GetString(bytes);
-            Debug.Log(jsonData);
+            
             //텍스트를 string으로 바꾼다음에 FromJson에 넣어주면은 우리가 쓸 수 있는 객체로 바꿀 수 있다
             gameData = JsonUtility.FromJson<WholeGameData>(jsonData);
         }
@@ -125,7 +125,7 @@ public class JsonManager
         //제이슨이 리스트를 못읽는 줄 알고 만든 어레이
         TextAsset text = Resources.Load<TextAsset>("json/buildingData");       
         string dataStr = text.ToString();
-        Debug.Log(dataStr);
+        
         wrapper = JsonUtility.FromJson<BuildingDataWrapper>(dataStr);
         //제이슨을 텍스트로변환하고 그걸 객체로 변환한다
         //래퍼 객체로 변환해주고, 래퍼 안의 array만 쏘옥 빼온다
@@ -174,7 +174,6 @@ public class JsonManager
             {
                 obj = Resources.Load<GameObject>("modeling/Cube");
                 building.prefab = obj;
-                Debug.Log(building.buildingName);
             }
             else
             {

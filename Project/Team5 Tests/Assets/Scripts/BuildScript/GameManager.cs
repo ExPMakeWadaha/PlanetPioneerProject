@@ -137,7 +137,6 @@ public class GameManager : MonoBehaviour {
         foreach (Building building in buildingList)
         {
             BuildingLoad(building);
-            coinIncomeSum += building.GetData().incomeCoin;
         }
     }
 
@@ -254,7 +253,6 @@ public class GameManager : MonoBehaviour {
 
     void BuildingLoad(Building building)
     {
-        Debug.Log(building.buildingName);
 
         //지나간 시간이 얼마나 되는지 확인.
         BuildingData buildingData = FindBuildingData(building.buildingName);   //처음에 자동으로 널값이 들어가질 않는다.
@@ -262,10 +260,10 @@ public class GameManager : MonoBehaviour {
 
         if (buildingData == null)
         {
-            Debug.Log("빌딩데이터를 못찾았음");
+        
             return;
         }
-        Debug.Log("빌딩데이터를 찾았음");
+        
         building.SetData(buildingData);
 
         if (building.isCompleted)
@@ -275,6 +273,8 @@ public class GameManager : MonoBehaviour {
             int time = sceneLoader.TimeSubtractionToSeconds(lastPlayTime, System.DateTime.Now);
             time = time / 10;
             coin += time * buildingData.incomeCoin;
+            Debug.Log("coin is " + time * buildingData.incomeCoin);
+            Debug.Log("time span is " + time);
             BuildComplete(building);
         }
         else
@@ -287,6 +287,8 @@ public class GameManager : MonoBehaviour {
                 int time = buildTime - buildingData.buildTime;
                 time = time / 10;
                 coin += time * buildingData.incomeCoin;
+                //Debug.Log("coin is " + time * buildingData.incomeCoin);
+                //Debug.Log("time span is " + time);
                 BuildComplete(building);
                 //다 지어진 빌딩 로드
 
@@ -309,6 +311,7 @@ public class GameManager : MonoBehaviour {
     void BuildComplete(int index)
     {
         //index는 buildingList에서 완료된 것의 index를 받는다
+        incompletedIndexList.Remove(index);
         optionManager.ChangeText(coin, coinIncomeSum, mileage);
         Building building = buildingList[index];
         BuildingData data = building.GetData();
@@ -364,7 +367,7 @@ public class GameManager : MonoBehaviour {
         //data를 받는 이유는 가로 세로 길이도 알아야해서이다.
         building.isCompleted = true; //완성됐다고 해주고
         coinIncomeSum += data.incomeCoin;
-
+        incompletedIndexList.Remove(building.index);
         building.buildingObject = Instantiate(data.prefab, building.positionVector, Quaternion.identity);
         building.buildingObject.tag = objectTag;
         BoxCollider collider = building.buildingObject.AddComponent<BoxCollider>();
@@ -389,6 +392,7 @@ public class GameManager : MonoBehaviour {
 
             }
         }
+        mileage += data.mileage * (nowStage + 1);
 
         //나머지는 건설중오브젝트 만드는거랑 똑같다
         Debug.Log("건설 끝났어");
@@ -427,7 +431,7 @@ public class GameManager : MonoBehaviour {
             }
         }
         coin += building.GetData().sellCost;
-
+        coinIncomeSum -= building.GetData().incomeCoin;
         Destroy(building.buildingObject);
         buildingList.Remove(building);
 
@@ -455,6 +459,7 @@ public class GameManager : MonoBehaviour {
     }
 
     IEnumerator BuildCoroutine() {
+        yield return null;
         while (true)
         {
 
@@ -466,13 +471,12 @@ public class GameManager : MonoBehaviour {
                 //update progression of constructing Buildings
                 
                 //지나간시간이 빌드타임보다 길면 되는거잖아.
-                //int buildTime = building.GetData().buildTime;
-                int buildTime = 0;  //디버그용으로 전부1초만에 지어짐 ㅋㅋ
+                int buildTime = building.GetData().buildTime;
+                //int buildTime = 0;  //디버그용으로 전부1초만에 지어짐 ㅋㅋ
                 if (buildTime < sceneLoader.TimeSubtractionToSeconds(building.buildStartTime, System.DateTime.Now))
                 {
                     BuildComplete(incompletedIndexList[i]);
-                    Debug.Log(incompletedIndexList[i]);
-                    incompletedIndexList.Remove(incompletedIndexList[i]);
+                    //incompletedIndexList.Remove(incompletedIndexList[i]);
 
                     //그러면 미완성 리스트에서 빼준당.
                     i--;
@@ -770,15 +774,15 @@ public class GameManager : MonoBehaviour {
     public void UpdateProgressUI(Building building)
     {
         //now u do it with dumy. better change next time
-        
-        
-        Text dumyText = building.GetUI().GetComponentInChildren<Text>();
+
+
+        Text dumyText = building.GetText();
         StringBuilder strBuilder = new StringBuilder();
         int leftTime = building.GetData().buildTime - sceneLoader.TimeSubtractionToSeconds(building.buildStartTime, System.DateTime.Now);
 
-        strBuilder.Append("now Loading\n");
         strBuilder.Append(leftTime.ToString());
         dumyText.text = strBuilder.ToString();
+
     }
 
 

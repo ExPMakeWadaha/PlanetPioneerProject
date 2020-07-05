@@ -6283,8 +6283,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bff43be0c9d9ab47b59074e9dc75bfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraSpeed: 0.05
+  cameraSpeed: 0.03
   rayScript: {fileID: 189454865}
+  isBuying: 1
 --- !u!4 &864046044
 Transform:
   m_ObjectHideFlags: 0
@@ -7921,6 +7922,7 @@ MonoBehaviour:
   optionCanvas: {fileID: 441108622}
   optionButton: {fileID: 1680899776}
   gameManager: {fileID: 257183902}
+  cameraMover: {fileID: 864046043}
   coinText: {fileID: 1321928405}
   mileageText: {fileID: 1238910873}
   incomeSumText: {fileID: 1410432613}

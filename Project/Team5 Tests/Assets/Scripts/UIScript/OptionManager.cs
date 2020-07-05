@@ -19,6 +19,7 @@ public class OptionManager : MonoBehaviour
     public GameManager gameManager;
     //옵션이 켜졌을 때 그 사실을 gameManage로 넘겨주어야 한다.
     //이렇게 매니저들끼리 연결되었을 떄 스파게티코드가 와장창 나온다. 진짜 조심해야한다. 근데 방법이 없다.
+    public cameraMove cameraMover;
 
 
     public Text coinText;
@@ -127,7 +128,6 @@ public class OptionManager : MonoBehaviour
         coinText.text = coin.ToString();
         incomeSumText.text = incomeSum.ToString();
         int mileagePercent = 10 * mileage / wholeMileage[stage];
-        Debug.Log(mileagePercent + "mile per");
         mileageText.text = mileagePercent.ToString();
         if (nowStar >= 10)
         {
@@ -154,10 +154,12 @@ public class OptionManager : MonoBehaviour
         if (isStoreOpened)
         {
             storeScrollObject.SetActive(false);
+            cameraMover.Buying(true);
         }
         else
         {
             storeScrollObject.SetActive(true);
+            cameraMover.Buying(false);
         }
         isStoreOpened = !isStoreOpened;
     }
@@ -180,7 +182,7 @@ public class OptionManager : MonoBehaviour
         buildingDataList = gameManager.buildingDataList;
 
         RectTransform contentRect = contentObject.GetComponent<RectTransform>();
-        float height = 250 * (buildingDataList.Count + 1);
+        float height = 250 * (buildingDataList.Count -5);
         contentRect.sizeDelta = new Vector2(0, height);
 
         //코인텍스트가 7번 차일드더라..
