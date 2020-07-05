@@ -5,7 +5,7 @@ using UnityEngine;
 public class ScrollView : MonoBehaviour
 {
    [SerializeField]
-   private gam
+   //private gam
     void Start()
     {
         

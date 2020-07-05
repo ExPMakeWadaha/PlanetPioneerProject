@@ -1,0 +1,146 @@
+{
+    "stageArray": [
+        {
+            "stageIndex": 0,
+            "buildingList": [
+                {
+                    "buildingName": "zone1Landmark",
+                    "xButton": {
+                        "instanceID": 0
+                    },
+                    "vButton": {
+                        "instanceID": 0
+                    },
+                    "sellButton": {
+                        "instanceID": -256066
+                    },
+                    "progressText": {
+                        "instanceID": -255614
+                    },
+                    "index": 0,
+                    "positionVector": {
+                        "x": -10.0,
+                        "y": 0.0,
+                        "z": -2.0
+                    },
+                    "isCompleted": true,
+                    "buildStartTime": "2020-07-05 PM 7:35:31",
+                    "buildingObject": {
+                        "instanceID": -256022
+                    }
+                },
+                {
+                    "buildingName": "apartment",
+                    "xButton": {
+                        "instanceID": 0
+                    },
+                    "vButton": {
+                        "instanceID": 0
+                    },
+                    "sellButton": {
+                        "instanceID": -256674
+                    },
+                    "progressText": {
+                        "instanceID": -256478
+                    },
+                    "index": 1,
+                    "positionVector": {
+                        "x": -9.0,
+                        "y": 0.0,
+                        "z": 8.0
+                    },
+                    "isCompleted": true,
+                    "buildStartTime": "2020-07-05 PM 7:35:39",
+                    "buildingObject": {
+                        "instanceID": -256490
+                    }
+                },
+                {
+                    "buildingName": "apartment",
+                    "xButton": {
+                        "instanceID": 0
+                    },
+                    "vButton": {
+                        "instanceID": 0
+                    },
+                    "sellButton": {
+                        "instanceID": -257448
+                    },
+                    "progressText": {
+                        "instanceID": -257252
+                    },
+                    "index": 2,
+                    "positionVector": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "isCompleted": true,
+                    "buildStartTime": "2020-07-05 PM 7:36:15",
+                    "buildingObject": {
+                        "instanceID": -257264
+                    }
+                }
+            ],
+            "mileage": 0,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        },
+        {
+            "stageIndex": 1,
+            "buildingList": [],
+            "mileage": 0,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        },
+        {
+            "stageIndex": 2,
+            "buildingList": [],
+            "mileage": 0,
+            "progressRate": 0.0,
+            "achievementArray": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "incompletedIndex": [],
+            "boughtBuilidng": []
+        }
+    ],
+    "lastPlayTime": "2020-07-05 PM 7:36:49",
+    "id": "sanghun",
+    "coin": 0
+}
