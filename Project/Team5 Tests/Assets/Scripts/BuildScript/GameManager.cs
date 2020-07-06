@@ -374,7 +374,7 @@ public class GameManager : MonoBehaviour {
     public void BuyBuilding(string name)
     {
         BuildingData data = FindBuildingData(name);
-
+        Debug.Log(data.buildingName);
         if (coin < data.cost)
         {
             return;

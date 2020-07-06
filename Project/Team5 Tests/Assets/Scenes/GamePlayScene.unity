@@ -5149,7 +5149,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1646703917}
+      - m_Target: {fileID: 257183902}
         m_MethodName: BuildApartment
         m_Mode: 1
         m_Arguments:
@@ -5208,16 +5208,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1482807899}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 143001e6d90d6fc4491894b9c095fca0, type: 3}
+  m_Script: {fileID: 11500000, guid: fd54839fde79c514dafaee9ecd249dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  optionCanvas: {fileID: 0}
-  optionButton: {fileID: 0}
   gameManager: {fileID: 0}
-  coinText: {fileID: 0}
-  mileageText: {fileID: 0}
-  incomeSumText: {fileID: 0}
-  coinTimerText: {fileID: 0}
 --- !u!1 &1646703916
 GameObject:
   m_ObjectHideFlags: 0
