@@ -53,10 +53,10 @@ public class JsonManager
 #if UNITY_EDITOR_WIN
 
 #endif
-#if UNITY_ANDROID
+/*#if UNITY_ANDROID
         loadPath = Application.persistentDataPath;
         
-#endif
+#endif*/
         StringBuilder builder = new StringBuilder(loadPath);
         builder.Append(directory);
         //위까지는 세이브랑 똑같다
