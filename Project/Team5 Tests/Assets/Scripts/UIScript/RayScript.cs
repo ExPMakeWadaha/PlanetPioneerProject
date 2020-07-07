@@ -72,9 +72,13 @@ public class RayScript : MonoBehaviour
             //we have to process this with gameManager
             //because gameManager has BuildingList, so you can know collidings
             //target.transform.position = gameManager.OnBuildingCollision(targetBuilding, pos);
+            if (!gameManager.IsBuildingColliding(targetBuilding, pos))
+            {
+                target.transform.position = pos;
+                
+            }
 
-            //좌클릭을 누르는 동안 마우스 좌표를 받아와 월드좌표로 변환 후, 타겟을 마우스의 위치로 옮깁니다.
-            target.transform.position = pos;
+                //좌클릭을 누르는 동안 마우스 좌표를 받아와 월드좌표로 변환 후, 타겟을 마우스의 위치로 옮깁니다.
             //gameManager.ChangeBuildingPosition(target);
             
          }
@@ -87,7 +91,7 @@ public class RayScript : MonoBehaviour
                 return;
             }
 
-            Vector3 positionVector = ScreenToWorld();
+            Vector3 positionVector = target.transform.position;
             
             if (gameManager.IsBuildingColliding(targetBuilding, positionVector))
             {
@@ -98,7 +102,7 @@ public class RayScript : MonoBehaviour
             else
             {
                 //not colliding
-                target.transform.position = positionVector;
+                //target.transform.position = positionVector;
             }
             gameManager.ChangeBuildingPosition(target);
             target = null;

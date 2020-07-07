@@ -310,8 +310,8 @@ public class GameManager : MonoBehaviour {
                 //update progression of constructing Buildings
                 
                 //지나간시간이 빌드타임보다 길면 되는거잖아.
-                int buildTime = building.GetData().buildTime;
-                //int buildTime = 0;  //디버그용으로 전부1초만에 지어짐 ㅋㅋ
+                //int buildTime = building.GetData().buildTime;
+                int buildTime = 0;  //디버그용으로 전부1초만에 지어짐 ㅋㅋ
                 if (buildTime < sceneLoader.TimeSubtractionToSeconds(building.buildStartTime, System.DateTime.Now))
                 {
                     BuildComplete(incompletedIndexList[i]);
