@@ -3,7 +3,7 @@
 "buildingArr":
 [
 {"buildingName":"zone1Landmark","type":0,"incomeCoin":5,"buildTime":0,"cost":0,"sellCost":-1,"width":10,"height":10,"mileage":10000},
-{"buildingName":"zone2Landmark","type":0,"incomeCoin":50,"buildTime":90000,"cost":50000,"sellCost":-1,"width":10,"height":10,"mileage":20000},
+{"buildingName":"zone2Landmark","type":0,"incomeCoin":50,"buildTime":90000,"cost":100000,"sellCost":-1,"width":10,"height":10,"mileage":20000},
 {"buildingName":"zone3Landmark","type":0,"incomeCoin":100,"buildTime":90000,"cost":1000000,"sellCost":-1,"width":10,"height":10,"mileage":30000},
 {"buildingName":"planet1","type":0,"incomeCoin":100,"buildTime":18000,"cost":1300,"sellCost":-1,"width":5,"height":5,"mileage":5000},
 {"buildingName":"planet2","type":0,"incomeCoin":100,"buildTime":18000,"cost":1000,"sellCost":-1,"width":5,"height":5,"mileage":8000},

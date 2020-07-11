@@ -27,7 +27,6 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         sceneLoader = SceneLoader.singleTone;
-        sceneLoader.WholeGameDataLoad();
         textArray = new Text[3];
         //스태틱변수는 이렇게 클래스에서 바로 받아올 수 있따.
         isStageUnlocked = new bool[3];

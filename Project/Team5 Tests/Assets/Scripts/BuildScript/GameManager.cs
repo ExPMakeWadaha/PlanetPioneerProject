@@ -62,7 +62,11 @@ public class GameManager : MonoBehaviour {
 
     //랜드마크 샀는지
     bool isLandmarkExist;
+    bool isLandmarkDone;
     bool isPlanetExist;
+
+    int loadedCoin;
+    int loadedMileage;
 
     //OptionManager에서 부르는 함수이다.
     public void Optioning()
@@ -96,6 +100,8 @@ public class GameManager : MonoBehaviour {
         buyingYButton = null;
         buyingData = null;
 
+        loadedCoin = 0;
+        loadedMileage = 0;
         coinIncomeSum = 0;  //초기화. 빌딩 지어질 떄마다 더해줄거. 초깃값은 onStageLoaded에서 정한다.
         coinTimer = 0;
 
@@ -109,7 +115,15 @@ public class GameManager : MonoBehaviour {
 
 
         isLandmarkExist = false;
+        isLandmarkDone = false;
+        isPlanetExist = false;
         nowBuildingIndex = buildingList.Count;
+
+        //빌드 코루틴에서 1초마다 체크를 해서 빌딩을 지어준다.
+    }
+
+    private void Start()
+    {
         OnStageLoaded();
         //현재 개수 몇개인지 세어준다.
         StartCoroutine(BuildCoroutine());
@@ -119,7 +133,6 @@ public class GameManager : MonoBehaviour {
             BuildStage1LandMark();
             //랜드마크 지어주낟
         }
-        //빌드 코루틴에서 1초마다 체크를 해서 빌딩을 지어준다.
     }
 
     void Update()
@@ -140,6 +153,18 @@ public class GameManager : MonoBehaviour {
         {
             BuildingLoad(building);
         }
+        optionManager.OnGameLoad(coin, mileage);
+        if(loadedCoin != 0)
+        {
+            
+            optionManager.CoinChange(coin, loadedCoin);
+        }
+        if(loadedMileage != 0)
+        {
+            
+            optionManager.MileageChange(mileage, loadedMileage);
+        }
+        
     }
 
     //상점에서 사는걸 누른 다음에 띄우는거
@@ -184,7 +209,6 @@ public class GameManager : MonoBehaviour {
         buyingUI.SetActive(false);
         Vector3 pos = nowBuyingObject.transform.position;
         Destroy(nowBuyingObject);
-        Debug.Log("position is " + pos);
         BuildStart(buyingData,pos);
 
         isBuyingNow = false;
@@ -207,12 +231,21 @@ public class GameManager : MonoBehaviour {
     public void BuildStart(BuildingData data,Vector3 pos)
     {
         coin -= data.cost;
-        optionManager.ChangeText(coin, coinIncomeSum, mileage);
+        optionManager.CoinChange(coin,-1 * data.cost);
         Building building = new Building(data, nowBuildingIndex);
         buildingList.Add(building);
 
         incompletedIndexList.Add(nowBuildingIndex);
         nowBuildingIndex++;
+
+        if (data.buildingName.Contains("planet"))
+        {
+            isPlanetExist = true;
+        }
+        if (data.buildingName.Contains("Landmark"))
+        {
+            isLandmarkExist = true;
+        }
 
         //빌딩 인덱스 현재거를 넣어준 다음에!!!! 1을 더해주어야한다
         //빌딩이 0개면 인덱스도 0이다. 인덱스는 1부터시작이 아니라 0부터시작이니까 0넣어주고 1더해줘야해!!
@@ -269,12 +302,11 @@ public class GameManager : MonoBehaviour {
         if (building.isCompleted)
         {
             //만약 이전부터 완성되었던 건물이라면
-            string lastPlayTime = sceneLoader.wholeGameData.stageArray[nowStage].lastPlayTime;
+            string lastPlayTime = stageData.lastPlayTime;
             int time = sceneLoader.TimeSubtractionToSeconds(lastPlayTime, System.DateTime.Now);
             time = time / 10;
             coin += time * buildingData.incomeCoin;
-            Debug.Log("coin is " + time * buildingData.incomeCoin);
-            Debug.Log("time span is " + time);
+            
         }
     }
 
@@ -298,15 +330,21 @@ public class GameManager : MonoBehaviour {
             isPlanetExist = true;
         }
 
+
+        if (buildingData.buildingName.Contains("Landmark"))
+        {
+            isLandmarkExist = true;
+        }
+
         if (building.isCompleted)
         {
             //만약 이전부터 완성되었던 건물이라면
-            string lastPlayTime = sceneLoader.wholeGameData.stageArray[nowStage].lastPlayTime;
+            string lastPlayTime = stageData.lastPlayTime;
             int time = sceneLoader.TimeSubtractionToSeconds(lastPlayTime, System.DateTime.Now);
             time = time / 10;
-            coin += time * buildingData.incomeCoin;
-            Debug.Log("coin is " + time * buildingData.incomeCoin);
-            Debug.Log("time span is " + time);
+            int income = time * buildingData.incomeCoin;
+            coin += income;
+            loadedCoin += income;
             BuildComplete(building);
         }
         else
@@ -318,7 +356,13 @@ public class GameManager : MonoBehaviour {
                 //만약 지금켰을 때 완성된 건물이라면
                 int time = buildTime - buildingData.buildTime;
                 time = time / 10;
-                coin += time * buildingData.incomeCoin;
+                int income = time * buildingData.incomeCoin;
+                coin += income;
+                loadedCoin += income;
+
+                int incomeMile = buildingData.mileage * (nowStage + 1);
+                mileage += incomeMile;
+                loadedMileage = incomeMile;
                 //Debug.Log("coin is " + time * buildingData.incomeCoin);
                 //Debug.Log("time span is " + time);
                 BuildComplete(building);
@@ -344,7 +388,6 @@ public class GameManager : MonoBehaviour {
     {
         //index는 buildingList에서 완료된 것의 index를 받는다
         incompletedIndexList.Remove(index);
-        optionManager.ChangeText(coin, coinIncomeSum, mileage);
         Building building = buildingList[index];
         BuildingData data = building.GetData();
         Vector3 pos = building.buildingObject.transform.position;
@@ -355,6 +398,7 @@ public class GameManager : MonoBehaviour {
         //로드된거면 기존 오브젝트가 없다
         coinIncomeSum += data.incomeCoin;
 
+        optionManager.MileageChange(mileage, data.mileage);
         building.buildingObject = Instantiate(data.prefab, building.positionVector, Quaternion.identity);
         building.buildingObject.transform.position = pos;
         building.buildingObject.tag = objectTag;
@@ -365,6 +409,7 @@ public class GameManager : MonoBehaviour {
         if (data.buildingName.Contains("Landmark"))
         {
             isLandmarkExist = true;
+            isLandmarkDone = true;
         }
         else
         {
@@ -387,7 +432,7 @@ public class GameManager : MonoBehaviour {
         //마일리지 한다.
 
 
-        Debug.Log("건설 끝났어");
+        
 
     }
 
@@ -410,6 +455,7 @@ public class GameManager : MonoBehaviour {
         if (data.buildingName.Contains("Landmark"))
         {
             isLandmarkExist = true;
+            isLandmarkDone = true;
         }
         else
         {
@@ -425,7 +471,7 @@ public class GameManager : MonoBehaviour {
 
             }
         }
-        mileage += data.mileage * (nowStage + 1);
+        
 
         //나머지는 건설중오브젝트 만드는거랑 똑같다
         Debug.Log("건설 끝났어");
@@ -434,19 +480,26 @@ public class GameManager : MonoBehaviour {
 
     public void SetSellButton(Building building)
     {
-        Button button = building.GetSellButton();
-        if(building.index == 0)
+        //버튼을 두 개 쓰는 이유는 반대편에서 봤을 때 버튼을 누르면 버튼이 안먹음...
+        Button[] button = building.GetSellButton();
+        if(building.GetData().sellCost == -1)
         {
             //landmark
-            button.gameObject.SetActive(false);
+            button[0].gameObject.SetActive(false);
+            button[1].gameObject.SetActive(false);
         }
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(() => SellBuilding(building.index));
+        foreach(Button obj in button)
+        {
+
+            obj.onClick.RemoveAllListeners();
+            obj.onClick.AddListener(() => SellBuilding(building.index));
+
+        }
     }
 
     public void SellBuilding(int index)
     {
-        optionManager.ChangeText(coin, coinIncomeSum, mileage);
+        
         nowBuildingIndex--;
         Building building = buildingList[index];
         foreach(Building obj in buildingList)
@@ -463,8 +516,10 @@ public class GameManager : MonoBehaviour {
                 incompletedIndexList[i]--;
             }
         }
-        coin += building.GetData().sellCost;
+        int sellCost = building.GetData().sellCost;
+        coin += sellCost;
         coinIncomeSum -= building.GetData().incomeCoin;
+        optionManager.CoinChange(coin, sellCost);
         Destroy(building.buildingObject);
         buildingList.Remove(building);
 
@@ -541,11 +596,11 @@ public class GameManager : MonoBehaviour {
     void CoinIncome()
     {
         coinTimer++;
-        optionManager.ChangeText(coin, coinIncomeSum, mileage);
         if (coinTimer >= 10)
         {
             coinTimer = 0;
             coin += coinIncomeSum * (nowStage + 1);
+            optionManager.CoinChange(coin, coinIncomeSum);
         }
 
         //코인을 늘려준다. 스테이지 + 1만큼
@@ -559,7 +614,7 @@ public class GameManager : MonoBehaviour {
     public StageData GetStageData()
     {
         stageData.mileage = mileage;    //마일리지 다시 저장
-
+        stageData.lastPlayTime = System.DateTime.Now.ToString();
         return stageData;
     }
 
@@ -573,19 +628,25 @@ public class GameManager : MonoBehaviour {
             return;
 
         }
-        else if (isLandmarkExist == true && containsLandmark)
+        else if(isLandmarkExist == true && containsLandmark)
         {
             return;
         }
-        if(isPlanetExist == true && name.Contains("planet"))
+        else if (isLandmarkDone == false && !containsLandmark)
         {
             return;
         }
-        if (name.Contains("Landmark"))
+
+
+        if (isPlanetExist == true && name.Contains("planet"))
+        {
+            return;
+        }
+        if (name.Contains("Landmark") || name.Contains("planet"))
         {
             if (coin < data.cost)
             {
-                Debug.Log("no Coin");
+                
                 return;
                 //못사면 그냥 리턴
             }
@@ -594,7 +655,7 @@ public class GameManager : MonoBehaviour {
         {
             if (coin < data.cost * (nowStage + 1))
             {
-                Debug.Log("no Coin");
+                
                 return;
                 //못사면 그냥 리턴
             }
@@ -622,7 +683,7 @@ public class GameManager : MonoBehaviour {
         }
         if (buildingData == null)
         {
-            Debug.Log("find building data null");
+            
         }
         return buildingData;
     }
@@ -642,7 +703,7 @@ public class GameManager : MonoBehaviour {
         }
         if (building == null)
         {
-            Debug.Log("find 불가. building이 null이다");
+            
             return null;
         }
 

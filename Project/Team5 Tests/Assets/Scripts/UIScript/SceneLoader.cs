@@ -85,6 +85,8 @@ public class SceneLoader : MonoBehaviour
         jsonManager = new JsonManager();
         //제이슨 매니저 만들어준다
 
+        
+
         gameStartTime = System.DateTime.Now.ToString();
         //게임 시작시간 기록
 
@@ -100,16 +102,32 @@ public class SceneLoader : MonoBehaviour
         
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (nowStage < 0)
+            {
+                return;
+            }
+            OnGameEnd();
+            nowStage = -1;
+            SceneManager.LoadScene("MenuScene");
+        }
+    }
+
     //메뉴신을 불러오는 코루틴. 여기서 앵간한 로딩은 다 해줘야한다.
     IEnumerator FirstSceneLoadCoroutine()
     {
         //먼저 다른함수들이 돌 수 있게 리턴을 찍어준다
         yield return null;
         //씬로딩은 그다음에 실행한다
+        
         AsyncOperation operation = SceneManager.LoadSceneAsync("MenuScene");
+        WholeGameDataLoad();
         //비동기로 씬 로딩하는거. 일케 안하면 게임이 멈춰버린다
         operation.allowSceneActivation = true;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1.5f);
         if (operation.isDone)
         {
             yield break;
@@ -195,7 +213,12 @@ public class SceneLoader : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-      //  wholeGameData.lastPlayTime = System.DateTime.Now.ToString();
+        //  wholeGameData.lastPlayTime = System.DateTime.Now.ToString();
+        OnGameEnd();
+    }
+
+    void OnGameEnd()
+    {
 
         if (nowStage >= 0)
         {
@@ -212,7 +235,10 @@ public class SceneLoader : MonoBehaviour
         string pausedTime = System.DateTime.Now.ToString();
         //일시정지한 시간을 잰다.
         //홈화면으로 나갈 때의 함수이다. 강제종료도 될 수 있으니, 저장을 바로 해준다.
-
+        if(nowStage < 0)
+        {
+            return;
+        }
         if (pause)
         {
             //일시정지를 시작했을 때 
@@ -267,7 +293,7 @@ public class SceneLoader : MonoBehaviour
         //string to datetime
         if (past == null || latest == null)
         {
-            Debug.Log("time is null");
+            
             Application.Quit();
             return 0;
         }
@@ -286,7 +312,7 @@ public class SceneLoader : MonoBehaviour
         //string to datetime
         if (past == null || latest == null)
         {
-            Debug.Log("time is null");
+            
             Application.Quit();
             return 0;
         }
