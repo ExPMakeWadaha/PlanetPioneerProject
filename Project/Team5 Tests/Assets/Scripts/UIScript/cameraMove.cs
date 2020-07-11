@@ -91,7 +91,7 @@ public class cameraMove : MonoBehaviour
                 deltaZoomMag *= 0.1f;
                 if (Mathf.Abs(deltaZoomMag) > 4.0f)
                 {
-                    Debug.Log("줌땡기고있어 " + deltaZoomMag);
+                    
                     isZoomed = true;
                     cam.fieldOfView += deltaZoomMag;
                     if (cam.fieldOfView > 120)

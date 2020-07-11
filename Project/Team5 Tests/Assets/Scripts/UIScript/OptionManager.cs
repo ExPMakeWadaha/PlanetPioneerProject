@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -25,11 +26,24 @@ public class OptionManager : MonoBehaviour
     public Text coinText;
     public Text mileageText;
     public Text incomeSumText;
-    public Text coinTimerText;
+
+    public Text coinChangeText;
+    public Text mileageChangeText;
+
+    RectTransform coinChangeObj;
+    RectTransform  mileageChangeObj;
+
+    Vector3 coinOriginalPos;
+    Vector3 mileageOriginalPos;
 
     int stage;
     int[] wholeMileage;
     int nowStar;
+    int nowMileage;
+    bool coinCoroutine;
+    bool mileageCoroutine;
+    float coinTime;
+    float mileageTime;
 
     //스테이지마다 UI가 바뀔건데 그 오브젝트
     //0이 1스테이지, 1이 2스테이지, 2가 3스테이지다
@@ -119,20 +133,24 @@ public class OptionManager : MonoBehaviour
 
 
     //게임매니저에서 매 초마다 부르는 함수
+    /*
     public void ChangeText(int coin, int incomeSum, int mileage)
     {
         if (wholeMileage == null)
         {
             return;
         }
+        //coin first
         coinText.text = coin.ToString();
         incomeSumText.text = incomeSum.ToString();
+        /*
         int mileagePercent = 10 * mileage / wholeMileage[stage];
-        mileageText.text = mileagePercent.ToString();
-        if (nowStar >= 9)
+
+        if (nowStar >= 9 || nowMileage == mileage)
         {
             return;
         }
+        nowMileage = mileage;
         if(mileagePercent >= 10)
         {
             mileagePercent = 9;
@@ -146,9 +164,111 @@ public class OptionManager : MonoBehaviour
             }
             
         }
+    }*/
+
+    public void CoinChange(int nowCoin, int changedCoin)
+    {
+        coinText.text = nowCoin.ToString();
+        StringBuilder builder;
+        if (changedCoin>0)
+        {
+            coinChangeText.color = new Color(1, 1, 1, 1);
+            builder = new StringBuilder("+ ");
+        }
+        else
+        {
+            coinChangeText.color = new Color(1, 0.5f, 0, 1);
+            builder = new StringBuilder("- ");
+            changedCoin *= -1;
+        }
+        builder.Append(changedCoin.ToString());
+        coinChangeText.text = builder.ToString();
+        coinChangeObj.anchoredPosition = coinOriginalPos;
+
+
+        if (coinCoroutine)
+        {
+            coinTime = 0;
+        }
+        else
+        {
+            coinCoroutine = true;
+            StartCoroutine(CoinChangeCoroutine(changedCoin));
+        }
+        
+
+        
     }
 
+    public void MileageChange(int mileage,int incomeMileage)
+    {
 
+        int mileagePercent = 10 * mileage / wholeMileage[stage];
+        mileageText.text = mileagePercent.ToString();
+
+        StringBuilder builder;
+        mileageChangeText.color = new Color(1, 1, 0, 1);
+        builder = new StringBuilder("+ ");
+        builder.Append(incomeMileage.ToString());
+        mileageChangeText.text = builder.ToString();
+        mileageChangeObj.anchoredPosition = mileageOriginalPos;
+
+
+
+        if (mileageCoroutine)
+        {
+            mileageTime = 0;
+        }
+        else
+        {
+            mileageCoroutine = true;
+            StartCoroutine(MileageChangeCoroutine(incomeMileage));
+        }
+
+        if (nowStar >= 9 || incomeMileage == 0)
+        {
+            return;
+        }
+        if (mileagePercent >= 10)
+        {
+            mileagePercent = 9;
+        }
+        if (nowStar < mileagePercent)
+        {
+            nowStar = mileagePercent;
+            for (int i = 0; i < nowStar; i++)
+            {
+                starParent.transform.GetChild(i).gameObject.SetActive(true);
+            }
+
+        }
+    }
+
+    public void OnGameLoad(int coin, int mileage)
+    {
+        coinText.text = coin.ToString();
+        //don't need to call corouitne
+        int mileagePercent = 10 * mileage / wholeMileage[stage];
+        mileageText.text = mileagePercent.ToString();
+
+        if (nowStar >= 9)
+        {
+            return;
+        }
+        if (mileagePercent >= 10)
+        {
+            mileagePercent = 9;
+        }
+        if (nowStar < mileagePercent)
+        {
+            nowStar = mileagePercent;
+            for (int i = 0; i < nowStar; i++)
+            {
+                starParent.transform.GetChild(i).gameObject.SetActive(true);
+            }
+
+        }
+    }
    
 
     //
@@ -169,7 +289,7 @@ public class OptionManager : MonoBehaviour
     }
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         isStoreOpened = false;
         stage = gameManager.nowStage;
@@ -177,6 +297,17 @@ public class OptionManager : MonoBehaviour
         {
             return;
         }
+
+        coinChangeObj = coinChangeText.rectTransform;
+        mileageChangeObj = mileageChangeText.rectTransform;
+
+        coinCoroutine = false;
+        mileageCoroutine = false;
+        coinTime = 0;
+        mileageTime = 0;
+        coinOriginalPos = coinChangeObj.anchoredPosition;
+        mileageOriginalPos = mileageChangeObj.anchoredPosition;
+
         uiParentPrefab[stage].SetActive(true);
 
         //getChild가 오브젝트 아래에서 찾아내는거다
@@ -218,6 +349,11 @@ public class OptionManager : MonoBehaviour
             button.onClick.AddListener(()=>BuyBuilding(name));
             Text costText = buttonObject.GetComponentInChildren<Text>();
             int cost = buildingDataList[i].cost * (stage + 1);
+            if (i < 6)
+            {
+                cost = buildingDataList[i].cost;
+
+            }
             costText.text = cost.ToString();
 
             GameObject buildingObject = Instantiate(buildingDataList[i].prefab, buttonObject.transform, false);
@@ -239,12 +375,81 @@ public class OptionManager : MonoBehaviour
             {
                 i = 5;
             }
-
-
         }
     }
 
-    
+
+
+    IEnumerator CoinChangeCoroutine(int coinIncome)
+    {
+        coinTime = 0;
+        coinChangeObj.gameObject.SetActive(true);
+        Vector3 pos = coinOriginalPos;
+        
+        RectTransform rect = coinChangeObj;
+        Text text = coinChangeText;
+        Color color = text.color;
+        
+                
+        
+
+        while(coinTime <= 2f)
+        {
+            color = text.color;
+            color.a -= Time.deltaTime * 0.5f;
+            text.color = color;
+            coinTime += Time.deltaTime;
+            pos = rect.anchoredPosition;
+            pos.y = pos.y - Time.deltaTime * 40;
+            rect.anchoredPosition = pos;
+            yield return null;
+            
+        }
+        color.a = 1;
+        text.color = color;
+        rect.anchoredPosition = coinOriginalPos;
+
+        coinChangeObj.gameObject.SetActive(false);
+        
+        coinCoroutine = false;
+
+        
+    }
+
+    IEnumerator MileageChangeCoroutine(int mileageIncome)
+    {
+        mileageTime = 0;
+        mileageChangeObj.gameObject.SetActive(true);
+        Vector3 pos = mileageOriginalPos;
+        RectTransform rect = mileageChangeObj;
+        Text text = mileageChangeText;
+        Color color = text.color;
+
+
+
+        while (mileageTime <= 3f)
+        {
+            mileageTime += Time.deltaTime;
+            color = text.color;
+            color.a -= Time.deltaTime * 1 / 3;
+            text.color = color;
+            pos = rect.anchoredPosition;
+            pos.y = pos.y - Time.deltaTime * 40f;
+            rect.anchoredPosition = pos;
+            yield return null;
+        }
+        color.a = 1;
+        text.color = color;
+        rect.anchoredPosition = mileageOriginalPos;
+
+        mileageChangeObj.gameObject.SetActive(false);
+
+        mileageCoroutine = false;
+
+
+    }
+
+
 
     public void BuyBuilding(string name)
     {

@@ -13,7 +13,7 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
     BuildingData buildingData;      //그냥 빌딩 자체가 데이터를 가져버리면 되잖아.
                                     //stagedata에서도 이대로 저장되면 json이 너무 길어지니 안된다.
     GameObject buildingUI;
-    Button sellButton;
+    Button[] sellButton;
     Text progressText;
     RectTransform progressRect;
                                     //private으로 해놓으면 제이슨에서 저장을 안한다. 그래서 json파일이 짧아져서 좋다.
@@ -67,10 +67,10 @@ public class Building        //빌딩 하나하나가 가지는 클래스.
     public void SetSellUI(GameObject obj)
     {
         buildingUI = obj;
-        sellButton = buildingUI.GetComponentInChildren<Button>();
+        sellButton = buildingUI.GetComponentsInChildren<Button>();
         
     }
-    public Button GetSellButton()
+    public Button[] GetSellButton()
     {
         return sellButton;
     }
