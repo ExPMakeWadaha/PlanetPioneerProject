@@ -14,7 +14,7 @@
                     "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:36:11",
                     "buildingObject": {
-                        "instanceID": -244436
+                        "instanceID": -263506
                     }
                 },
                 {
@@ -25,10 +25,10 @@
                         "y": 0.0,
                         "z": 4.0
                     },
-                    "isCompleted": false,
+                    "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 6:36:26",
                     "buildingObject": {
-                        "instanceID": -244458
+                        "instanceID": -263528
                     }
                 },
                 {
@@ -39,10 +39,10 @@
                         "y": 0.0,
                         "z": -7.0
                     },
-                    "isCompleted": false,
+                    "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:36:28",
                     "buildingObject": {
-                        "instanceID": -244866
+                        "instanceID": -263892
                     }
                 },
                 {
@@ -53,10 +53,10 @@
                         "y": 0.0,
                         "z": -12.0
                     },
-                    "isCompleted": false,
+                    "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:36:33",
                     "buildingObject": {
-                        "instanceID": -245274
+                        "instanceID": -264064
                     }
                 },
                 {
@@ -67,10 +67,10 @@
                         "y": 0.0,
                         "z": -2.0
                     },
-                    "isCompleted": false,
+                    "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:36:41",
                     "buildingObject": {
-                        "instanceID": -245682
+                        "instanceID": -264164
                     }
                 },
                 {
@@ -81,14 +81,14 @@
                         "y": 0.0,
                         "z": 9.0
                     },
-                    "isCompleted": false,
+                    "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:45:51",
                     "buildingObject": {
-                        "instanceID": -246090
+                        "instanceID": -264336
                     }
                 }
             ],
-            "mileage": 160000,
+            "mileage": 165800,
             "progressRate": 0.0,
             "achievementArray": [
                 false,
@@ -102,15 +102,9 @@
                 false,
                 false
             ],
-            "incompletedIndex": [
-                1,
-                2,
-                3,
-                4,
-                5
-            ],
+            "incompletedIndex": [],
             "boughtBuilidng": [],
-            "lastPlayTime": "2020-07-05 PM 7:36:09"
+            "lastPlayTime": "2021-04-01 PM 1:54:46"
         },
         {
             "stageIndex": 1,
@@ -324,5 +318,5 @@
         }
     ],
     "id": "sanghun",
-    "coin": 47999295
+    "coin": 746577455
 }

@@ -16,9 +16,19 @@ public class MainScene : MonoBehaviour
         
     }
 
+    bool creditLoaded = false;
+    public void CreditButton()
+    {
+        creditLoaded = true;
+        SceneManager.LoadScene("CreditScene");
+    }
+    
+
+
     IEnumerator LoadCoroutine()
     {
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene("StartScene");
+        if(!creditLoaded)
+            SceneManager.LoadScene("StartScene");
     }
 }
