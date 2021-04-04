@@ -11,7 +11,7 @@ public class WholeGameData
     
     public StageData[] stageArray;                     //받아온 스테이지데이터들 3개.
     public string id;                                  //그냥 만들어본 아이디
-    public int coin;
+    public ulong coin;
     public List<Building>[] incompletedBuildingList;   //각스테이지에 존재하는 미완성 건물들
 
 

@@ -166,7 +166,7 @@ public class OptionManager : MonoBehaviour
         }
     }*/
 
-    public void CoinChange(int nowCoin, int changedCoin)
+    public void CoinChange(ulong nowCoin, int changedCoin)
     {
         coinText.text = nowCoin.ToString();
         StringBuilder builder;
@@ -244,7 +244,7 @@ public class OptionManager : MonoBehaviour
         }
     }
 
-    public void OnGameLoad(int coin, int mileage)
+    public void OnGameLoad(ulong coin, int mileage)
     {
         coinText.text = coin.ToString();
         //don't need to call corouitne
@@ -274,7 +274,7 @@ public class OptionManager : MonoBehaviour
     //
     public void StoreButtonClick()
     {
-
+        Debug.Log("뭔데");
         if (isStoreOpened)
         {
             storeScrollObject.SetActive(false);
@@ -291,7 +291,7 @@ public class OptionManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        isStoreOpened = false;
+        isStoreOpened = true;
         stage = gameManager.nowStage;
         if(stage >= 3)
         {
@@ -317,7 +317,7 @@ public class OptionManager : MonoBehaviour
         buildingDataList = gameManager.buildingDataList;
 
         RectTransform contentRect = contentObject.GetComponent<RectTransform>();
-        float height = 250 * (buildingDataList.Count -3);
+        float height = 200 * (buildingDataList.Count+2);
         contentRect.sizeDelta = new Vector2(0, height);
 
         //코인텍스트가 7번 차일드더라..
@@ -376,6 +376,11 @@ public class OptionManager : MonoBehaviour
                 i = 5;
             }
         }
+    }
+
+    private void Start()
+    {
+        StoreButtonClick();
     }
 
 

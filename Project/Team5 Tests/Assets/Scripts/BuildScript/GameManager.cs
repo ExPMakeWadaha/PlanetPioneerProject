@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour {
     SceneLoader sceneLoader;    //여기서 정보를 다 땡겨오는거다.
     StageData stageData;    //현재 스테이지에서 가지고 있을 데이터. 
     public int nowStage;    //현재 스테이지. 0 1 2 이다
-    public int coin;        //현재 가지고 있는 돈
+    public ulong coin;        //현재 가지고 있는 돈
     public int mileage;        //마일리지
 
     //public으로 지정한 객체와 변수는 이런식으로 Unity창에서 초기화 할 수 있다. 자세한 내용은 Unity Public변수 초기화를 검색하자
@@ -230,7 +230,7 @@ public class GameManager : MonoBehaviour {
     //로딩해서 짓는게 아니라, 실제로 게임내에서 사서 짓는경우
     public void BuildStart(BuildingData data,Vector3 pos)
     {
-        coin -= data.cost;
+        coin -= (ulong)data.cost;
         optionManager.CoinChange(coin,-1 * data.cost);
         Building building = new Building(data, nowBuildingIndex);
         buildingList.Add(building);
@@ -305,7 +305,7 @@ public class GameManager : MonoBehaviour {
             string lastPlayTime = stageData.lastPlayTime;
             int time = sceneLoader.TimeSubtractionToSeconds(lastPlayTime, System.DateTime.Now);
             time = time / 10;
-            coin += time * buildingData.incomeCoin;
+            coin += (ulong)time * (ulong)buildingData.incomeCoin;
             
         }
     }
@@ -343,7 +343,7 @@ public class GameManager : MonoBehaviour {
             int time = sceneLoader.TimeSubtractionToSeconds(lastPlayTime, System.DateTime.Now);
             time = time / 10;
             int income = time * buildingData.incomeCoin;
-            coin += income;
+            coin += (ulong)income;
             loadedCoin += income;
             BuildComplete(building);
         }
@@ -357,7 +357,7 @@ public class GameManager : MonoBehaviour {
                 int time = buildTime - buildingData.buildTime;
                 time = time / 10;
                 int income = time * buildingData.incomeCoin;
-                coin += income;
+                coin += (ulong)income;
                 loadedCoin += income;
 
                 int incomeMile = buildingData.mileage * (nowStage + 1);
@@ -517,7 +517,7 @@ public class GameManager : MonoBehaviour {
             }
         }
         int sellCost = building.GetData().sellCost;
-        coin += sellCost;
+        coin += (ulong)sellCost;
         coinIncomeSum -= building.GetData().incomeCoin;
         optionManager.CoinChange(coin, sellCost);
         Destroy(building.buildingObject);
@@ -599,7 +599,7 @@ public class GameManager : MonoBehaviour {
         if (coinTimer >= 10)
         {
             coinTimer = 0;
-            coin += coinIncomeSum * (nowStage + 1);
+            coin += (ulong)coinIncomeSum * (ulong)(nowStage + 1);
             optionManager.CoinChange(coin, coinIncomeSum);
         }
 
@@ -644,7 +644,7 @@ public class GameManager : MonoBehaviour {
         }
         if (name.Contains("Landmark") || name.Contains("planet"))
         {
-            if (coin < data.cost)
+            if (coin < (ulong)data.cost)
             {
                 
                 return;
@@ -653,7 +653,7 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            if (coin < data.cost * (nowStage + 1))
+            if (coin < (ulong)data.cost * (ulong)(nowStage + 1))
             {
                 
                 return;
