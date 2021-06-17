@@ -14,7 +14,7 @@
                     "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:36:11",
                     "buildingObject": {
-                        "instanceID": -263506
+                        "instanceID": -48996
                     }
                 },
                 {
@@ -28,7 +28,7 @@
                     "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 6:36:26",
                     "buildingObject": {
-                        "instanceID": -263528
+                        "instanceID": -49018
                     }
                 },
                 {
@@ -42,7 +42,7 @@
                     "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:36:28",
                     "buildingObject": {
-                        "instanceID": -263892
+                        "instanceID": -49382
                     }
                 },
                 {
@@ -56,7 +56,7 @@
                     "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:36:33",
                     "buildingObject": {
-                        "instanceID": -264064
+                        "instanceID": -49554
                     }
                 },
                 {
@@ -70,7 +70,7 @@
                     "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:36:41",
                     "buildingObject": {
-                        "instanceID": -264164
+                        "instanceID": -49654
                     }
                 },
                 {
@@ -84,7 +84,7 @@
                     "isCompleted": true,
                     "buildStartTime": "2020-07-05 PM 7:45:51",
                     "buildingObject": {
-                        "instanceID": -264336
+                        "instanceID": -49826
                     }
                 }
             ],
@@ -104,7 +104,7 @@
             ],
             "incompletedIndex": [],
             "boughtBuilidng": [],
-            "lastPlayTime": "2021-04-01 PM 1:54:46"
+            "lastPlayTime": "2021-06-17 AM 9:14:31"
         },
         {
             "stageIndex": 1,
@@ -318,5 +318,5 @@
         }
     ],
     "id": "sanghun",
-    "coin": 746577455
+    "coin": 945656855
 }

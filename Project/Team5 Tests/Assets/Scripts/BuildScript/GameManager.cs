@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Analytics;
 using UnityEngine.UI;
+using GoogleMobileAds.Api;
 
 public class GameManager : MonoBehaviour {
 
@@ -67,6 +68,8 @@ public class GameManager : MonoBehaviour {
 
     int loadedCoin;
     int loadedMileage;
+    private BannerView bannerView;
+
 
     //OptionManager에서 부르는 함수이다.
     public void Optioning()
@@ -133,6 +136,12 @@ public class GameManager : MonoBehaviour {
             BuildStage1LandMark();
             //랜드마크 지어주낟
         }
+
+        string adUnitId = "ca-app-pub-6023793752348178/4975927990";
+        this.bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Bottom);
+        AdRequest request = new AdRequest.Builder().Build();
+        this.bannerView.LoadAd(request);
+
     }
 
     void Update()
