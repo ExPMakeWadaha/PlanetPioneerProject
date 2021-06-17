@@ -238,7 +238,7 @@ PlayerSettings:
   AndroidTargetArchitectures: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 2800000, guid: 9e22a87ce4f4dfc42b1e62cf8e1d35e5, type: 3}
-  AndroidKeystoreName: C:/Users/CafeAlle/Documents/GitHub/Team5/keystore/user.keystore
+  AndroidKeystoreName: C:/GithubDesktop/PlanetPioneer/Team5/keystore/user.keystore
   AndroidKeyaliasName: planetpioneerkey
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
