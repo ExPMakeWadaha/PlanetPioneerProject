@@ -136,14 +136,23 @@ public class GameManager : MonoBehaviour {
             BuildStage1LandMark();
             //랜드마크 지어주낟
         }
+        //MobileAds.Initialize(initStatus => { });
 
+        MobileAds.Initialize(initStatus => { });
+
+        this.RequestBanner();
+
+    }
+
+    private void RequestBanner()
+    {
         string adUnitId = "ca-app-pub-6023793752348178/4975927990";
         this.bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Bottom);
         AdRequest request = new AdRequest.Builder().Build();
         this.bannerView.LoadAd(request);
-
     }
 
+    /*
     void Update()
     {
         //무작위로 생성하는거. 디버그용임
@@ -151,7 +160,7 @@ public class GameManager : MonoBehaviour {
         {
             BuildRadomBuilding();
         }
-    }
+    }*/
 
 
     //stage가 맨처음에 로딩되었을 때 불러줄 함수.

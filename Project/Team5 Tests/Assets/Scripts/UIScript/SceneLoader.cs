@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using GoogleMobileAds.Api;
 
 
 public class SceneLoader : MonoBehaviour
@@ -55,7 +54,6 @@ public class SceneLoader : MonoBehaviour
     GameManager nowGameManager;
     //현재 게임매니저에서 stageData를 받아와야한다.
 
-    private BannerView bannerView;
 
 
     //버튼이 클릭될 때 실행될 메서드 만들기. menuManager에서 부른다.
@@ -63,11 +61,6 @@ public class SceneLoader : MonoBehaviour
     {
         nowStage = stageIndex;
         SceneManager.LoadScene(sceneName);
-
-        string adUnitId = "ca-app-pub-6023793752348178/4975927990";
-        this.bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Bottom);
-        AdRequest request = new AdRequest.Builder().Build();
-        this.bannerView.LoadAd(request);
         //scene로드는 scene의 이름을 string으로 호출하여 로드한다.
         //scene로드를 하려면 Editor에서 File/BuildSettings/ScenesInBuild에 로드하려는 Scene이 들어가있어야한다.
         //BuildSettings에 Scene이 들어가있지 않으면, 그 Scene을 사용하지 않겠다는 걸로 간주해서 로드를 할 수가 없다.
@@ -107,8 +100,6 @@ public class SceneLoader : MonoBehaviour
 
         nowStage = -1;
         //스테이지가 몇스테이지인지 나타내주는건데, 0,1,2는 1 2 3 구역이고, -1은 그 외이다. 플레이안할때인겨.
-
-        MobileAds.Initialize(initStatus => { });
 
 
         //실제
